@@ -1,11 +1,15 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps {
   variant?: 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
   children: ReactNode;
   href?: string;
+  className?: string;
+  onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
 export default function Button({ 
@@ -14,7 +18,9 @@ export default function Button({
   children, 
   className = '',
   href,
-  ...props 
+  onClick,
+  type = 'button',
+  disabled = false
 }: ButtonProps) {
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2';
   
@@ -46,10 +52,12 @@ export default function Button({
 
   return (
     <motion.button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
       className={classes}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      {...props}
     >
       {children}
     </motion.button>

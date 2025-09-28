@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Instagram, Pinterest, MessageCircle } from 'lucide-react';
+import { Instagram, ImageIcon, MessageCircle } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -64,7 +64,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-ink/70 hover:text-ink transition-colors text-sm"
               >
-                <Pinterest size={16} />
+                <ImageIcon size={16} />
                 <span>Pinterest</span>
               </a>
             </div>

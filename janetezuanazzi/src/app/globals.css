@@ -2,6 +2,12 @@
 
 @import "tailwindcss";
 
+@theme {
+  --color-bg: #FFFFFF;
+  --color-accent: #FFD7D7;
+  --color-ink: #000000;
+}
+
 :root {
   --color-bg: #FFFFFF;
   --color-accent: #FFD7D7;
