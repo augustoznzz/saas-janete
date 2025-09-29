@@ -1,43 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Janete Zuanazzi - Bordados Autorais e Personalizados",
-  description: "Ateliê de bordados autorais e personalizados. Enxovais, patches, monogramas e presentes únicos com qualidade excepcional.",
-  keywords: "bordados, personalizados, enxoval, patches, monogramas, artesanato, ateliê",
-  authors: [{ name: "Janete Zuanazzi" }],
-  openGraph: {
-    title: "Janete Zuanazzi - Bordados Autorais e Personalizados",
-    description: "Ateliê de bordados autorais e personalizados. Enxovais, patches, monogramas e presentes únicos com qualidade excepcional.",
-    type: "website",
-    locale: "pt_BR",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Janete Zuanazzi - Bordados Autorais e Personalizados",
-    description: "Ateliê de bordados autorais e personalizados. Enxovais, patches, monogramas e presentes únicos com qualidade excepcional.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  title: "Janete Zuanazzi | Bordados Minimalistas",
+  description: "SaaS simples para o ateliê de bordado de Janete Zuanazzi. Solicite orçamentos e acompanhe projetos artesanais sob medida.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="pt-BR">
-      <body className="antialiased">
-        <Header />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <Footer />
+      <body className="antialiased bg-[var(--brand-background)] text-[var(--brand-ink)]">
+        {children}
       </body>
     </html>
   );

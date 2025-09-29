@@ -1,65 +1,29 @@
-import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { ComponentPropsWithoutRef } from "react";
 
-interface ButtonProps {
-  variant?: 'primary' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
-  children: ReactNode;
-  href?: string;
-  className?: string;
-  onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
-  disabled?: boolean;
-}
+type ButtonProps = {
+  variant?: "solid" | "ghost";
+} & ComponentPropsWithoutRef<"button">;
 
-export default function Button({ 
-  variant = 'primary', 
-  size = 'md', 
-  children, 
-  className = '',
-  href,
-  onClick,
-  type = 'button',
-  disabled = false
+function Button({
+  className = "",
+  variant = "solid",
+  type = "button",
+  ...props
 }: ButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2';
-  
-  const variantClasses = {
-    primary: 'bg-accent text-ink hover:bg-accent/80 hover:scale-105 focus:ring-accent/50',
-    secondary: 'border-2 border-ink text-ink hover:bg-ink hover:text-bg focus:ring-ink/50',
-  };
-  
-  const sizeClasses = {
-    sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3 text-base',
-    lg: 'px-8 py-4 text-lg',
-  };
-
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
-
-  if (href) {
-    return (
-      <motion.a
-        href={href}
-        className={classes}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {children}
-      </motion.a>
-    );
-  }
+  const base = "inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition";
+  const variants = {
+    solid: "bg-black text-white hover:bg-[var(--brand-muted)]",
+    ghost: "border border-black/10 bg-[var(--brand-surface)] text-[var(--brand-ink)] hover:border-black/30 hover:bg-white",
+  } as const;
 
   return (
-    <motion.button
+    <button
       type={type}
-      disabled={disabled}
-      onClick={onClick}
-      className={classes}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {children}
-    </motion.button>
+      className={`${base} ${variants[variant]} ${className}`.trim()}
+      {...props}
+    />
   );
 }
+
+export default Button;
+export type { ButtonProps };

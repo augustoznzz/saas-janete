@@ -1,38 +1,17 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
+
+const routes = [
+  "",
+  "#funcionalidades",
+  "#planos",
+  "#contato",
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://janetezuanazzi.com';
+  const baseUrl = "https://www.janetezuanazzi.com";
 
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/sobre`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/portfolio`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/servicos`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/contato`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-  ];
+  return routes.map((segment) => ({
+    url: segment ? `${baseUrl}/${segment}` : baseUrl,
+    lastModified: new Date(),
+  }));
 }
