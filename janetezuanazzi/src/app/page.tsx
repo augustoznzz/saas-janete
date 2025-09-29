@@ -61,7 +61,7 @@ export default function HomePage() {
 
       {/* Sobre */}
       <section className="container-narrow mt-20 grid gap-10 md:grid-cols-2 items-center">
-        <div className="relative aspect-square overflow-hidden rounded-full">
+        <div className="relative aspect-square overflow-hidden rounded-full scale-90 origin-center">
           <Image src="https://media.discordapp.net/attachments/1393705889613221928/1421818601010233435/image.png?ex=68dbbcc2&is=68da6b42&hm=29f6397776667d4ce73d84bdb98b8b8c077a25536d4ec126e21cbdcff42c162a&=&format=webp&quality=lossless" alt="Artista" fill className="object-cover" />
         </div>
         <div>

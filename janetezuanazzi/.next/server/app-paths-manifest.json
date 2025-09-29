@@ -1,8 +1,6 @@
 {
   "/page": "app/page.js",
   "/cursos/page": "app/cursos/page.js",
-  "/login/page": "app/login/page.js",
-  "/api/login/route": "app/api/login/route.js",
   "/galeria/page": "app/galeria/page.js",
   "/aluno/cursos/[slug]/page": "app/aluno/cursos/[slug]/page.js",
   "/aluno/dashboard/page": "app/aluno/dashboard/page.js"
