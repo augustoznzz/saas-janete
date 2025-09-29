@@ -1,29 +1,21 @@
-import { ComponentPropsWithoutRef } from "react";
+import { clsx } from 'clsx';
+import Link from 'next/link';
 
 type ButtonProps = {
-  variant?: "solid" | "ghost";
-} & ComponentPropsWithoutRef<"button">;
+  href?: string;
+  children: React.ReactNode;
+  className?: string;
+};
 
-function Button({
-  className = "",
-  variant = "solid",
-  type = "button",
-  ...props
-}: ButtonProps) {
-  const base = "inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition";
-  const variants = {
-    solid: "bg-black text-white hover:bg-[var(--brand-muted)]",
-    ghost: "border border-black/10 bg-[var(--brand-surface)] text-[var(--brand-ink)] hover:border-black/30 hover:bg-white",
-  } as const;
-
+export function Button({ href, children, className }: ButtonProps) {
+  const classes = clsx('cta-button', className);
+  if (href) {
+    return (
+      <Link href={href} className={classes}>{children}</Link>
+    );
+  }
   return (
-    <button
-      type={type}
-      className={`${base} ${variants[variant]} ${className}`.trim()}
-      {...props}
-    />
+    <button className={classes}>{children}</button>
   );
 }
 
-export default Button;
-export type { ButtonProps };
