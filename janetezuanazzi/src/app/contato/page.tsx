@@ -9,11 +9,11 @@ export default function ContatoPage() {
         <ul className="space-y-3">
           <li>
             <span className="font-semibold">Instagram: </span>
-            <Link href="https://instagram.com" target="_blank" className="underline">@atelie</Link>
+            <Link href="https://www.instagram.com/janetezuanazzi/" target="_blank" className="underline">@janetezuanazzi</Link>
           </li>
           <li>
             <span className="font-semibold">WhatsApp: </span>
-            <Link href="https://wa.me/5500000000000" target="_blank" className="underline">(00) 00000-0000</Link>
+            <Link href="https://wa.me/554899819211?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20melhor%20sobre%20o%20seu%20trabalho%20e%20os%20valores%20das%20aulas%20presenciais" target="_blank" className="underline">(48) 9981-9211</Link>
           </li>
         </ul>
       </div>

@@ -30,11 +30,17 @@ declare namespace __next_route_internal_types__ {
 
   type StaticRoutes = 
     | `/`
+    | `/aluno/dashboard`
+    | `/api/login`
+    | `/api/logout`
     | `/contato`
-    | `/galeria`
+    | `/criar-conta`
     | `/cursos`
+    | `/galeria`
+    | `/login`
     | `/sobre`
   type DynamicRoutes<T extends string = string> = 
+    | `/aluno/cursos/${SafeSlug<T>}`
     | `/cursos/${SafeSlug<T>}`
 
   type RouteImpl<T> = 

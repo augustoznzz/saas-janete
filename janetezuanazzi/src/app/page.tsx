@@ -28,12 +28,9 @@ const courses = [
 ];
 
 const galleryPreview = [
-  'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1000&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1000&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=1000&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1505740106531-4243f3831c78?q=80&w=1000&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1496317899792-9d7dbcd928a1?q=80&w=1000&auto=format&fit=crop',
-  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop',
+  'https://i.imgur.com/pvIDsyt.jpg',
+  'https://i.imgur.com/DUTqYb7.jpg',
+  'https://i.imgur.com/u5KKvlw.jpg',
 ];
 
 export default function HomePage() {
@@ -41,17 +38,11 @@ export default function HomePage() {
     <div>
       {/* Hero */}
       <section className="relative h-[70vh] md:h-[85vh]">
-        <Image
-          src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop"
-          alt="Ateliê"
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="relative z-10 container-narrow h-full flex flex-col items-start justify-center text-white">
-          <h1 className="font-serif text-4xl md:text-6xl max-w-2xl">Arte que inspira. Cursos que transformam.</h1>
-          <p className="mt-4 max-w-xl text-white/90">Explore cursos online e o portfólio do ateliê, com uma curadoria de técnicas e projetos artísticos.</p>
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-rose-100 to-rose-200" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-rose-50/40" />
+        <div className="relative z-10 container-narrow h-full flex flex-col items-start justify-center text-black">
+          <h1 className="font-serif text-4xl md:text-6xl max-w-2xl" style={{ color: '#292929' }}>Arte que inspira. Cursos que transformam.</h1>
+          <p className="mt-4 max-w-xl text-black/70">Explore os cursos online e o portfólio do ateliê.</p>
           <div className="mt-6">
             <Button href="/cursos" className="bg-brand-pink text-black hover:bg-brand-pinkMuted">Conheça meus cursos</Button>
           </div>
@@ -71,7 +62,7 @@ export default function HomePage() {
       {/* Sobre */}
       <section className="container-narrow mt-20 grid gap-10 md:grid-cols-2 items-center">
         <div className="relative aspect-square overflow-hidden rounded-full">
-          <Image src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1200&auto=format&fit=crop" alt="Artista" fill className="object-cover" />
+          <Image src="https://media.discordapp.net/attachments/1393705889613221928/1421818601010233435/image.png?ex=68dbbcc2&is=68da6b42&hm=29f6397776667d4ce73d84bdb98b8b8c077a25536d4ec126e21cbdcff42c162a&=&format=webp&quality=lossless" alt="Artista" fill className="object-cover" />
         </div>
         <div>
           <h2 className="section-title mb-4">Sobre Mim</h2>
@@ -84,7 +75,13 @@ export default function HomePage() {
       <section className="container-narrow mt-20">
         <div className="flex items-center justify-between">
           <h2 className="section-title">Galeria</h2>
-          <Link href="/galeria" className="underline">Ver galeria completa</Link>
+          <Button
+            href="/galeria"
+            className="group"
+          >
+            <span>Ver galeria completa</span>
+            <span className="ml-2 transition-transform duration-300 ease-out group-hover:translate-x-1">→</span>
+          </Button>
         </div>
         <div className="mt-6 columns-2 md:columns-3 gap-4 [column-fill:_balance]"><div className="grid md:hidden" /></div>
         <div className="mt-6 columns-2 md:columns-3 gap-4">
