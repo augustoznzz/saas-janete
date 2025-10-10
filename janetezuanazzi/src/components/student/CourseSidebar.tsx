@@ -2,24 +2,26 @@
 import React from 'react';
 import ProgressBar from './ProgressBar';
 import type { Course } from '@/lib/mockCourses';
-import { readCourseProgress } from '@/lib/progress';
+import { readCourseProgress, calcCourseCompletionPercent } from '@/lib/progress';
+import type { CourseProgress } from '@/lib/progress';
 
 type Props = {
   course: Course;
   activeLessonId?: string;
   onLessonSelect?: (lessonId: string) => void;
+  progress?: CourseProgress;
 };
 
-export default function CourseSidebar({ course, activeLessonId, onLessonSelect }: Props) {
+export default function CourseSidebar({ course, activeLessonId, onLessonSelect, progress }: Props) {
   const [expanded, setExpanded] = React.useState<Record<string, boolean>>({});
   const [percent, setPercent] = React.useState(0);
 
   React.useEffect(() => {
-    const prog = readCourseProgress(course.slug);
+    // Prefer progress from props for immediate UI feedback; fallback to storage
+    const prog = progress ?? readCourseProgress(course.slug);
     const total = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-    const done = Object.values(prog).filter((p) => p.completed).length;
-    setPercent(total ? Math.round((done / total) * 100) : 0);
-  }, [course.slug, course.modules]);
+    setPercent(calcCourseCompletionPercent(prog, total));
+  }, [course.slug, course.modules, progress]);
 
   return (
     <aside className="p-4 border-l border-gray-200 h-full overflow-y-auto">

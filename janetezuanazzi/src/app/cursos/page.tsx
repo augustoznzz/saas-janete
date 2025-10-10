@@ -16,7 +16,7 @@ const courses = [
     image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1600&auto=format&fit=crop',
   },
   {
-    slug: 'pintura-oleo',
+    slug: 'pintura-a-oleo',
     title: 'Pintura a Óleo',
     description: 'Domine camadas, mistura de cores e acabamento em óleo com projetos autorais.',
     price: 'R$ 349,00',

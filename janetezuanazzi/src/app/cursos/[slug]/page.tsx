@@ -6,7 +6,7 @@ type Course = {
   title: string;
   description: string;
   price: string;
-  youtubeId: string;
+
   modules: string[];
 };
 
@@ -16,7 +16,7 @@ const courses: Course[] = [
     title: 'Aquarela para Iniciantes',
     description: 'Curso completo para começar na aquarela com confiança. Materiais, técnicas e projetos.',
     price: 'R$ 249,00',
-    youtubeId: 'ysz5S6PUM-U',
+
     modules: [
       'Introdução e materiais',
       'Lavagens e gradações',
@@ -30,13 +30,26 @@ const courses: Course[] = [
     title: 'Ilustração Botânica',
     description: 'Do esboço à pintura final, com foco em observação e precisão das formas.',
     price: 'R$ 299,00',
-    youtubeId: 'ysz5S6PUM-U',
+
     modules: [
       'Referências e esboço',
       'Volume e luz',
       'Cores e camadas',
       'Detalhes e acabamento',
       'Projeto final: lâmina botânica'
+    ],
+  },
+  {
+    slug: 'pintura-a-oleo',
+    title: 'Pintura a óleo',
+    description: 'Técnicas essenciais de pintura a óleo: materiais, mistura de cores e camadas.',
+    price: 'R$ 349,00',
+    modules: [
+      'Materiais e preparação da tela',
+      'Cores, solventes e médiums',
+      'Blocos de cor e valores',
+      'Camadas e acabamento',
+      'Projeto final: paisagem a óleo'
     ],
   },
 ];
@@ -63,20 +76,12 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
     );
   }
 
+  const hideVideo = course.slug === 'aquarela-iniciantes';
+
   return (
     <div className="container-narrow py-10">
       <h1 className="section-title mb-4">{course.title}</h1>
       <p className="text-black/70 max-w-2xl">{course.description}</p>
-
-      <div className="mt-8 aspect-video w-full overflow-hidden rounded-xl">
-        <iframe
-          className="h-full w-full"
-          src={`https://www.youtube.com/embed/${course.youtubeId}`}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-        />
-      </div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-[1fr_320px]">
         <div>

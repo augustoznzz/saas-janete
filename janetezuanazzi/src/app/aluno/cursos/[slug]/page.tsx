@@ -6,6 +6,7 @@ import VideoPlayer from '@/components/student/VideoPlayer';
 import Tabs from '@/components/student/Tabs';
 import CourseSidebar from '@/components/student/CourseSidebar';
 import { markLessonCompleted, readCourseProgress } from '@/lib/progress';
+import type { CourseProgress } from '@/lib/progress';
 
 export default function CoursePlayerPage() {
   const params = useParams<{ slug: string }>();
@@ -18,10 +19,12 @@ export default function CoursePlayerPage() {
   }, [course]);
 
   const [activeIndex, setActiveIndex] = React.useState(0);
+  const [progress, setProgress] = React.useState<CourseProgress>({});
 
   React.useEffect(() => {
     if (!course) return;
     const prog = readCourseProgress(course.slug);
+    setProgress(prog);
     const firstIncomplete = allLessons.findIndex((l) => !prog[l.id]?.completed);
     setActiveIndex(firstIncomplete >= 0 ? firstIncomplete : 0);
   }, [course, allLessons]);
@@ -35,7 +38,7 @@ export default function CoursePlayerPage() {
 
   const handleVideoComplete = React.useCallback(() => {
     if (course && allLessons[activeIndex]) {
-      markLessonCompleted(course.slug, allLessons[activeIndex].id);
+      setProgress(markLessonCompleted(course.slug, allLessons[activeIndex].id));
     }
   }, [course, allLessons, activeIndex]);
 
@@ -49,6 +52,7 @@ export default function CoursePlayerPage() {
   }
 
   const lesson = allLessons[activeIndex];
+  const isCompleted = !!progress[lesson?.id]?.completed;
   const goPrev = () => setActiveIndex((i) => Math.max(0, i - 1));
   const goNext = () => setActiveIndex((i) => Math.min(allLessons.length - 1, i + 1));
 
@@ -75,10 +79,11 @@ export default function CoursePlayerPage() {
 
         <div className="flex items-center gap-3 pt-2">
           <button
-            className="px-4 py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700"
-            onClick={() => markLessonCompleted(course.slug, lesson.id)}
+            className="px-4 py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60"
+            onClick={() => setProgress(markLessonCompleted(course.slug, lesson.id))}
+            disabled={isCompleted}
           >
-            Marcar como concluída
+            {isCompleted ? 'Concluída' : 'Marcar como concluída'}
           </button>
           <div className="ml-auto flex items-center gap-2">
             <button
@@ -100,7 +105,7 @@ export default function CoursePlayerPage() {
       </div>
 
       <div className="lg:col-span-3">
-        <CourseSidebar course={course} activeLessonId={lesson.id} onLessonSelect={handleLessonSelect} />
+        <CourseSidebar course={course} activeLessonId={lesson.id} onLessonSelect={handleLessonSelect} progress={progress} />
       </div>
     </div>
   );
