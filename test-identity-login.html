@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Identity Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        input, button { margin: 10px 0; padding: 10px; width: 100%; }
+        button { background: #047857; color: white; border: none; cursor: pointer; }
+        button:hover { background: #065f46; }
+        pre { background: #f3f4f6; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .error { color: #dc2626; }
+        .success { color: #059669; }
+    </style>
+</head>
+<body>
+    <h1>Test Netlify Identity Login</h1>
+    <p>Este teste faz uma requisição POST direta ao endpoint de Identity para diagnosticar problemas de autenticação.</p>
+    
+    <form id="loginForm">
+        <label>Email:</label>
+        <input type="email" id="email" required placeholder="seu@email.com">
+        
+        <label>Senha:</label>
+        <input type="password" id="password" required placeholder="sua senha">
+        
+        <button type="submit">Testar Login</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<p>Testando...</p>';
+            
+            try {
+                // Test 1: Direct POST to Identity endpoint
+                const body = new URLSearchParams();
+                body.set('grant_type', 'password');
+                body.set('username', email);
+                body.set('password', password);
+                
+                const identityUrl = 'https://janetezuanazzi.netlify.app/.netlify/identity/token';
+                
+                resultDiv.innerHTML += `<p>Fazendo POST para: ${identityUrl}</p>`;
+                
+                const response = await fetch(identityUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: body.toString(),
+                    redirect: 'manual'
+                });
+                
+                const status = response.status;
+                const statusText = response.statusText;
+                
+                resultDiv.innerHTML += `<p>Status: ${status} ${statusText}</p>`;
+                
+                // Check for redirect
+                if ([301, 302, 307, 308].includes(status)) {
+                    const location = response.headers.get('location');
+                    resultDiv.innerHTML += `<p class="error">⚠️ Redirecionamento detectado para: ${location}</p>`;
+                    resultDiv.innerHTML += `<p>Tentando seguir o redirect...</p>`;
+                    
+                    const response2 = await fetch(location, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: body.toString(),
+                    });
+                    
+                    resultDiv.innerHTML += `<p>Status após redirect: ${response2.status} ${response2.statusText}</p>`;
+                    
+                    const contentType = response2.headers.get('content-type') || '';
+                    const text = await response2.text();
+                    
+                    if (response2.ok) {
+                        resultDiv.innerHTML += `<p class="success">✓ Login bem-sucedido!</p>`;
+                        const data = JSON.parse(text);
+                        resultDiv.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    } else {
+                        resultDiv.innerHTML += `<p class="error">✗ Erro no login</p>`;
+                        resultDiv.innerHTML += `<pre>${text}</pre>`;
+                    }
+                    return;
+                }
+                
+                const contentType = response.headers.get('content-type') || '';
+                const text = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML += `<p class="success">✓ Login bem-sucedido!</p>`;
+                    const data = JSON.parse(text);
+                    resultDiv.innerHTML += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML += `<p class="error">✗ Erro no login</p>`;
+                    
+                    if (contentType.includes('application/json')) {
+                        try {
+                            const errorData = JSON.parse(text);
+                            resultDiv.innerHTML += `<pre>${JSON.stringify(errorData, null, 2)}</pre>`;
+                            
+                            // Interpret common errors
+                            const errorStr = (errorData.error || errorData.error_description || '').toLowerCase();
+                            if (errorStr.includes('invalid_grant')) {
+                                resultDiv.innerHTML += `<p class="error">❌ Credenciais inválidas ou usuário não confirmado</p>`;
+                            }
+                        } catch {
+                            resultDiv.innerHTML += `<pre>${text}</pre>`;
+                        }
+                    } else {
+                        resultDiv.innerHTML += `<pre>${text}</pre>`;
+                    }
+                }
+                
+                // Additional checks
+                resultDiv.innerHTML += '<h3>Headers da resposta:</h3>';
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                resultDiv.innerHTML += `<pre>${JSON.stringify(headers, null, 2)}</pre>`;
+                
+            } catch (error) {
+                resultDiv.innerHTML += `<p class="error">Erro ao fazer requisição: ${error.message}</p>`;
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+</html>
+
