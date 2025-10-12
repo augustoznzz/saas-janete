@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const params = useSearchParams();
   const [email, setEmail] = React.useState('');
@@ -111,6 +111,14 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <LoginPageContent />
+    </React.Suspense>
   );
 }
 
