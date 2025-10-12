@@ -1,7 +1,6 @@
 "use client";
 import React from 'react';
 import { getAccessToken } from '@/lib/identity';
-import { getUserFromSession } from '@/lib/auth';
 
 type AdminUserRow = {
   id: string;
@@ -13,7 +12,6 @@ type AdminUserRow = {
 };
 
 export default function AdminPage() {
-  const sessionUser = getUserFromSession();
   const [rows, setRows] = React.useState<AdminUserRow[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -46,7 +44,7 @@ export default function AdminPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Admin</h1>
-        <p className="text-gray-600">Bem-vindo{sessionUser?.name ? `, ${sessionUser.name}` : ''}.</p>
+        <p className="text-gray-600">Bem-vindo.</p>
       </div>
       {error && <p className="text-red-600 text-sm">{error}</p>}
       <div className="overflow-x-auto">
