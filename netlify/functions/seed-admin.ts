@@ -1,11 +1,16 @@
 import type { Handler } from '@netlify/functions';
 
 const GOTRUE_URL = process.env.IDENTITY_GOTRUE_URL;
-const ADMIN_TOKEN = process.env.IDENTITY_ADMIN_TOKEN;
+// Accept multiple env var names for admin token compatibility
+const ADMIN_TOKEN =
+  process.env.IDENTITY_ADMIN_TOKEN ||
+  process.env.ADMIN_TOKEN ||
+  process.env.ADMIN ||
+  process.env.SEED_ADMIN_TOKEN;
 
 export const handler: Handler = async () => {
   if (!GOTRUE_URL || !ADMIN_TOKEN) {
-    return { statusCode: 500, body: 'Missing IDENTITY_GOTRUE_URL or IDENTITY_ADMIN_TOKEN' };
+    return { statusCode: 500, body: 'Missing IDENTITY_GOTRUE_URL or admin token env (IDENTITY_ADMIN_TOKEN/ADMIN_TOKEN/ADMIN/SEED_ADMIN_TOKEN)' };
   }
 
   const email = process.env.ADMIN_EMAIL;
