@@ -9,7 +9,7 @@ const sans = Lato({ subsets: ['latin'], weight: ['300','400','700','900'], varia
 
 export const metadata: Metadata = {
   title: {
-    default: 'Ateliê - Cursos e Portfólio',
+    default: 'Ateliê Janete Zuanazzi',
     template: '%s | Ateliê',
   },
   description: 'Ateliê com mais de 20 anos de experiência em bordado, cursos acessíveis e uma didática acolhedora.',
