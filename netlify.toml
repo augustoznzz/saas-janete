@@ -2,7 +2,7 @@
   base = "janetezuanazzi"
   command = "npm run build"
   publish = ".next"
-  functions = "netlify/functions"
+  functions = "../netlify/functions"
 
 [build.environment]
   # Ensure Next.js target is set for Netlify
@@ -15,7 +15,7 @@
 [dev]
   command = "npm run dev"
   port = 8888
-  targetPort = 3000
+  targetPort = 3001
   publish = ".next"
 
 

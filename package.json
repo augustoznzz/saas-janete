@@ -7,7 +7,9 @@
     "build": "npm --prefix ./janetezuanazzi run build",
     "start": "npm --prefix ./janetezuanazzi run start",
     "install:app": "npm --prefix ./janetezuanazzi install"
+  },
+  "dependencies": {
+    "@netlify/functions": "^4.3.0",
+    "pg": "^8.16.3"
   }
 }
-
-
