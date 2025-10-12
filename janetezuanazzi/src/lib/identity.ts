@@ -17,8 +17,17 @@ const BASE = resolveBase();
 const TOKEN_KEY = 'identity_access_token';
 const TOKEN_EXP_KEY = 'identity_access_token_expires_at';
 
+async function fetchPreservingRedirect(url: string, init: RequestInit) {
+  const first = await fetch(url, { ...init, redirect: 'manual' });
+  if ([301, 302, 307, 308].includes(first.status)) {
+    const loc = first.headers.get('location');
+    if (loc) return fetch(loc, init);
+  }
+  return first;
+}
+
 export async function signup(email: string, password: string, name?: string) {
-  const res = await fetch(`${BASE}/signup`, {
+  const res = await fetchPreservingRedirect(`${BASE}/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password, data: { full_name: name } }),
@@ -35,7 +44,7 @@ export async function login(email: string, password: string) {
   body.set('grant_type', 'password');
   body.set('username', email);
   body.set('password', password);
-  const res = await fetch(`${BASE}/token`, {
+  const res = await fetchPreservingRedirect(`${BASE}/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),
