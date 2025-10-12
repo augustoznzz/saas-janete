@@ -1,12 +1,23 @@
 import type { Handler } from '@netlify/functions';
 
 const GOTRUE_URL = process.env.IDENTITY_GOTRUE_URL;
-// Accept multiple env var names for admin token compatibility
-const ADMIN_TOKEN =
-  process.env.IDENTITY_ADMIN_TOKEN ||
-  process.env.ADMIN_TOKEN ||
-  process.env.ADMIN ||
-  process.env.SEED_ADMIN_TOKEN;
+// Accept multiple env var names for admin token compatibility and report source
+function getAdminTokenFromEnv(): { token: string | undefined; source: string | undefined } {
+  const candidates: Array<[string, string | undefined]> = [
+    ['IDENTITY_ADMIN_TOKEN', process.env.IDENTITY_ADMIN_TOKEN],
+    ['ADMIN_TOKEN', process.env.ADMIN_TOKEN],
+    ['ADMIN', process.env.ADMIN],
+    ['SEED_ADMIN_TOKEN', process.env.SEED_ADMIN_TOKEN],
+  ];
+  for (const [name, value] of candidates) {
+    if (value && String(value).trim()) {
+      return { token: String(value).trim(), source: name };
+    }
+  }
+  return { token: undefined, source: undefined };
+}
+
+const { token: ADMIN_TOKEN, source: ADMIN_TOKEN_SOURCE } = getAdminTokenFromEnv();
 
 function normalizeBaseUrl(url: string): string {
   // ensure exactly one trailing slash
@@ -25,7 +36,18 @@ async function fetchWithAuth(url: string, init: RequestInit) {
 
 export const handler: Handler = async () => {
   if (!GOTRUE_URL || !ADMIN_TOKEN) {
-    return { statusCode: 500, body: 'Missing IDENTITY_GOTRUE_URL or admin token env (IDENTITY_ADMIN_TOKEN/ADMIN_TOKEN/ADMIN/SEED_ADMIN_TOKEN)' };
+    const msg = !GOTRUE_URL
+      ? 'Missing IDENTITY_GOTRUE_URL'
+      : 'Missing admin token env (try IDENTITY_ADMIN_TOKEN recommended; also supports ADMIN_TOKEN, ADMIN, SEED_ADMIN_TOKEN)';
+    return { statusCode: 500, body: msg };
+  }
+  // Validate JWT-looking token format to avoid confusing 401s from GoTrue
+  const isLikelyJwt = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/.test(ADMIN_TOKEN);
+  if (!isLikelyJwt) {
+    return {
+      statusCode: 500,
+      body: `Invalid admin token format from env ${ADMIN_TOKEN_SOURCE}. Expected a JWT in the form xxx.yyy.zzz (set IDENTITY_ADMIN_TOKEN with the Identity Admin API key).`,
+    };
   }
 
   const email = process.env.ADMIN_EMAIL;

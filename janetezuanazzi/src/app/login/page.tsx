@@ -11,6 +11,7 @@ function LoginPageContent() {
   const [error, setError] = React.useState<string | null>(null);
   const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
   const [redirectPath, setRedirectPath] = React.useState<string>('/aluno/dashboard');
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
     try {
@@ -21,6 +22,7 @@ function LoginPageContent() {
         setSuccessMessage('Conta criada com sucesso! Agora você pode fazer login.');
       }
     } catch {}
+    setMounted(true);
   }, []);
 
   async function onSubmit(e: React.FormEvent) {
@@ -46,6 +48,8 @@ function LoginPageContent() {
       setLoading(false);
     }
   }
+
+  if (!mounted) return null;
 
   return (
     <main className="min-h-[70vh] flex items-center justify-center px-4 py-12">
