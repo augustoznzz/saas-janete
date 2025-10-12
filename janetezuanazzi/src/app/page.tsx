@@ -60,7 +60,7 @@ export default function HomePage() {
           <h1 className="font-serif text-4xl md:text-6xl max-w-2xl" style={{ color: '#292929' }}>Arte que inspira. Cursos que transformam.</h1>
           <p className="mt-4 max-w-xl text-black/70">Explore os cursos online e o portfólio do ateliê.</p>
           <div className="mt-6">
-            <Button href="/cursos" className="bg-brand-pink text-black hover:bg-brand-pinkMuted">Conheça meus cursos</Button>
+            <Button href="/cursos" className="bg-brand-pink text-black hover:bg-brand-pinkMuted">Conheça os cursos</Button>
           </div>
         </div>
       </section>
