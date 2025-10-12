@@ -81,7 +81,13 @@ export default function HomePage() {
         </div>
         <div>
           <h2 className="section-title mb-4">Sobre Mim</h2>
-          <p className="text-black/70">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tincidunt, ante vitae tempor pharetra, nibh metus luctus risus, non aliquam erat ante quis justo. Curabitur posuere, justo quis feugiat placerat, urna lorem fermentum nulla, ac fermentum orci sem sit amet arcu.</p>
+          <p className="text-black/70">Há mais de 20 anos me dedico ao universo do bordado, uma arte que me acompanha, inspira e ensina constantemente. 
+          <br /><br />
+          Ao longo desse tempo, venho aprimorando não apenas minhas técnicas de bordado, mas também a forma como compartilho esse conhecimento com outras pessoas.
+          <br /><br />
+          Acredito que bordar é mais do que costurar fios — é um gesto de cuidado, paciência e expressão. Por isso, busco unir tradição e aprendizado, sempre explorando novas formas de ensinar e despertar nas pessoas o prazer de criar com as próprias mãos.
+          </p>
+          
           <div className="mt-6"><Button href="/sobre">Conheça minha história</Button></div>
         </div>
       </section>
