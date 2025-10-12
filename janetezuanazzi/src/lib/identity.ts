@@ -1,8 +1,18 @@
 "use client";
 
-const BASE =
-  process.env.NEXT_PUBLIC_IDENTITY_GOTRUE_URL ||
-  (typeof window !== 'undefined' ? `${window.location.origin}/.netlify/identity` : '/.netlify/identity');
+function resolveBase(): string {
+  if (process.env.NEXT_PUBLIC_IDENTITY_GOTRUE_URL) return process.env.NEXT_PUBLIC_IDENTITY_GOTRUE_URL;
+  if (typeof window === 'undefined') return '/.netlify/identity';
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    // Use Netlify Dev proxy for Identity in local development
+    const proto = window.location.protocol || 'http:';
+    return `${proto}//localhost:8888/.netlify/identity`;
+  }
+  return `${window.location.origin}/.netlify/identity`;
+}
+
+const BASE = resolveBase();
 
 const TOKEN_KEY = 'identity_access_token';
 const TOKEN_EXP_KEY = 'identity_access_token_expires_at';
@@ -31,8 +41,20 @@ export async function login(email: string, password: string) {
     body: body.toString(),
   });
   if (!res.ok) {
-    const t = await res.text();
-    throw new Error(t || 'Falha no login');
+    let msg = 'Falha no login';
+    try {
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        const j = await res.json();
+        msg = j.error || j.msg || msg;
+      } else {
+        const t = await res.text();
+        if (t?.includes('<!DOCTYPE html')) {
+          msg = 'Endpoint de Identity indisponível. Rode "netlify dev" ou defina NEXT_PUBLIC_IDENTITY_GOTRUE_URL.';
+        } else if (t) msg = t;
+      }
+    } catch {}
+    throw new Error(msg);
   }
   const data = await res.json();
   const token = data.access_token as string;
