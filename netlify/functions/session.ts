@@ -15,7 +15,11 @@ export const handler: Handler = async (event, context) => {
     email: user.email,
   };
 
-  const cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(basic))}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${MAX_AGE}`;
+  // Only mark cookie as Secure when the request is over HTTPS
+  const forwardedProto = (event as any)?.headers?.['x-forwarded-proto'] || (event as any)?.multiValueHeaders?.['x-forwarded-proto']?.[0] || 'http';
+  const proto = Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto;
+  const secureAttr = proto === 'https' ? ' Secure;' : '';
+  const cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(basic))}; Path=/; HttpOnly;${secureAttr} SameSite=Lax; Max-Age=${MAX_AGE}`;
 
   return {
     statusCode: 204,
