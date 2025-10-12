@@ -1,10 +1,20 @@
 import React from 'react';
+import { getAccessToken } from '@/lib/identity';
 import { getUserFromSession } from '@/lib/auth';
 import { mockCourses } from '@/lib/mockCourses';
 import { calcCourseCompletionPercent, readCourseProgress } from '@/lib/progress';
 
 export default function DashboardPage() {
   const user = getUserFromSession();
+  React.useEffect(() => {
+    (async () => {
+      const token = await getAccessToken();
+      if (token) {
+        // ensure profile upserted (no-op if exists)
+        await fetch('/.netlify/functions/me', { headers: { Authorization: `Bearer ${token}` } });
+      }
+    })();
+  }, []);
 
   // In a real app, fetch user courses. Here we show all mock courses as acquired.
   const courses = mockCourses;

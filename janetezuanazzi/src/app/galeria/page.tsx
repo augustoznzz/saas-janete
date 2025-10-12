@@ -7,6 +7,8 @@ const images = [
   'https://i.imgur.com/pvIDsyt.jpg',
   'https://i.imgur.com/DUTqYb7.jpg',
   'https://i.imgur.com/u5KKvlw.jpg',
+  'https://i.imgur.com/4PUUadq.jpg',
+  'https://i.imgur.com/eprkf4Y.jpg',
 ];
 
 export default function GaleriaPage() {

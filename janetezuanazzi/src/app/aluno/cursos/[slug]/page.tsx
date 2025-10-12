@@ -6,6 +6,7 @@ import VideoPlayer from '@/components/student/VideoPlayer';
 import Tabs from '@/components/student/Tabs';
 import CourseSidebar from '@/components/student/CourseSidebar';
 import { markLessonCompleted, readCourseProgress } from '@/lib/progress';
+import { getAccessToken } from '@/lib/identity';
 import type { CourseProgress } from '@/lib/progress';
 
 export default function CoursePlayerPage() {
@@ -25,6 +26,24 @@ export default function CoursePlayerPage() {
     if (!course) return;
     const prog = readCourseProgress(course.slug);
     setProgress(prog);
+    // Fetch remote progress for merge
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        if (!token) return;
+        const res = await fetch(`/.netlify/functions/progress?course_slug=${encodeURIComponent(course.slug)}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const remote: CourseProgress = data?.lessons_completed || {};
+          // Prefer remote if newer; simple merge for now
+          setProgress((prev) => ({ ...prev, ...remote }));
+        }
+      } catch {
+        // ignore
+      }
+    })();
     const firstIncomplete = allLessons.findIndex((l) => !prog[l.id]?.completed);
     setActiveIndex(firstIncomplete >= 0 ? firstIncomplete : 0);
   }, [course, allLessons]);
@@ -38,7 +57,27 @@ export default function CoursePlayerPage() {
 
   const handleVideoComplete = React.useCallback(() => {
     if (course && allLessons[activeIndex]) {
-      setProgress(markLessonCompleted(course.slug, allLessons[activeIndex].id));
+      const lessonId = allLessons[activeIndex].id;
+      const next = markLessonCompleted(course.slug, lessonId);
+      setProgress(next);
+      // Persist remotely
+      (async () => {
+        try {
+          const token = await getAccessToken();
+          if (!token) return;
+          // Compute percent client-side using mock course size
+          const total = allLessons.length;
+          const completed = Object.values(next).filter((p) => p.completed).length;
+          const percent = Math.round((completed / Math.max(total, 1)) * 100);
+          await fetch('/.netlify/functions/progress', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ course_slug: course.slug, lesson_id: lessonId, percent }),
+          });
+        } catch {
+          // ignore
+        }
+      })();
     }
   }, [course, allLessons, activeIndex]);
 
@@ -80,7 +119,24 @@ export default function CoursePlayerPage() {
         <div className="flex items-center gap-3 pt-2">
           <button
             className="px-4 py-2 rounded-md bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60"
-            onClick={() => setProgress(markLessonCompleted(course.slug, lesson.id))}
+            onClick={() => {
+              const next = markLessonCompleted(course.slug, lesson.id);
+              setProgress(next);
+              (async () => {
+                try {
+                  const token = await getAccessToken();
+                  if (!token) return;
+                  const total = allLessons.length;
+                  const completed = Object.values(next).filter((p) => p.completed).length;
+                  const percent = Math.round((completed / Math.max(total, 1)) * 100);
+                  await fetch('/.netlify/functions/progress', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                    body: JSON.stringify({ course_slug: course.slug, lesson_id: lesson.id, percent }),
+                  });
+                } catch {}
+              })();
+            }}
             disabled={isCompleted}
           >
             {isCompleted ? 'Concluída' : 'Marcar como concluída'}

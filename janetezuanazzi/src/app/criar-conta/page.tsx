@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { signup as identitySignup, login as identityLogin, getAccessToken } from '@/lib/identity';
 
 export default function CriarContaPage() {
   const router = useRouter();
@@ -56,13 +57,17 @@ export default function CriarContaPage() {
 
     setLoading(true);
     try {
-      // Simular criação de conta - em um app real, chamaria uma API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Redirecionar para login após criar conta
-      router.push('/login?message=conta-criada');
+      await identitySignup(formData.email, formData.password, formData.name);
+      // Many setups require email confirmation; for simplicity, attempt login right away
+      await identityLogin(formData.email, formData.password);
+      const token = await getAccessToken();
+      if (!token) throw new Error('Falha ao obter token');
+      const sres = await fetch('/.netlify/functions/session', { headers: { Authorization: `Bearer ${token}` } });
+      if (!sres.ok) throw new Error('Falha ao iniciar sessão');
+      await fetch('/.netlify/functions/me', { headers: { Authorization: `Bearer ${token}` } });
+      router.push('/aluno/dashboard');
     } catch (err: any) {
-      setError('Erro ao criar conta. Tente novamente.');
+      setError(err.message || 'Erro ao criar conta. Tente novamente.');
     } finally {
       setLoading(false);
     }

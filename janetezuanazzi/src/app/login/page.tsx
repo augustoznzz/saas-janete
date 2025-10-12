@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { login as identityLogin, getAccessToken } from '@/lib/identity';
 
 function LoginPageContent() {
   const router = useRouter();
@@ -22,15 +23,17 @@ function LoginPageContent() {
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      // Identity login
+      await identityLogin(email, password);
+      const token = await getAccessToken();
+      if (!token) throw new Error('Falha ao obter token');
+      // Set SSR cookie via Netlify Function
+      const sres = await fetch('/.netlify/functions/session', {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data?.error || 'Falha no login');
-      }
+      if (!sres.ok) throw new Error('Falha ao iniciar sessão');
+      // ensure profile exists
+      await fetch('/.netlify/functions/me', { headers: { Authorization: `Bearer ${token}` } });
       const redirect = params.get('redirect') || '/aluno/dashboard';
       router.replace(redirect);
     } catch (err: any) {
