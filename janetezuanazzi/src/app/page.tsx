@@ -47,7 +47,7 @@ const testimonials = [
   'O espaço é caseiro. Perfeito para quem quer algo simples e terapêutico',
 ];
 
-const studentNames = ['Lurdes', 'Telma', 'Katia'];
+const studentNames = ['Maria', 'Telma', 'Katia'];
 
 export default function HomePage() {
   return (
@@ -107,7 +107,7 @@ export default function HomePage() {
         </div>
         <div className="mt-6 columns-2 md:columns-3 gap-4 [column-fill:_balance]"><div className="grid md:hidden" /></div>
         <div className="mt-6 columns-2 md:columns-3 gap-4">
-          {galleryPreview.map((src, i) => (
+          {galleryPreview.slice(0, 3).map((src, i) => (
             <div key={i} className="mb-4 break-inside-avoid rounded-xl overflow-hidden">
               <Image src={src} alt="Obra" width={800} height={600} className="w-full h-auto object-cover" />
             </div>

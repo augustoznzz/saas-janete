@@ -1,22 +1,27 @@
 "use client";
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { login as identityLogin, getAccessToken } from '@/lib/identity';
 
 function LoginPageContent() {
   const router = useRouter();
-  const params = useSearchParams();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
+  const [redirectPath, setRedirectPath] = React.useState<string>('/aluno/dashboard');
 
   React.useEffect(() => {
-    if (params.get('message') === 'conta-criada') {
-      setSuccessMessage('Conta criada com sucesso! Agora você pode fazer login.');
-    }
-  }, [params]);
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const redirect = sp.get('redirect');
+      if (redirect) setRedirectPath(redirect);
+      if (sp.get('message') === 'conta-criada') {
+        setSuccessMessage('Conta criada com sucesso! Agora você pode fazer login.');
+      }
+    } catch {}
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,8 +39,7 @@ function LoginPageContent() {
       if (!sres.ok) throw new Error('Falha ao iniciar sessão');
       // ensure profile exists
       await fetch('/.netlify/functions/me', { headers: { Authorization: `Bearer ${token}` } });
-      const redirect = params.get('redirect') || '/aluno/dashboard';
-      router.replace(redirect);
+      router.replace(redirectPath);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -118,11 +122,7 @@ function LoginPageContent() {
 }
 
 export default function LoginPage() {
-  return (
-    <React.Suspense fallback={null}>
-      <LoginPageContent />
-    </React.Suspense>
-  );
+  return <LoginPageContent />;
 }
 
 
