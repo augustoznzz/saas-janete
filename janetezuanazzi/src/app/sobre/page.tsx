@@ -4,14 +4,14 @@ export default function SobrePage() {
   return (
     <div className="container-narrow mt-6 grid gap-10 md:grid-cols-2 items-start">
       <div className="relative aspect-square overflow-hidden rounded-2xl">
-        <Image src="https://media.discordapp.net/attachments/1393705889613221928/1421818601010233435/image.png?ex=68dbbcc2&is=68da6b42&hm=29f6397776667d4ce73d84bdb98b8b8c077a25536d4ec126e21cbdcff42c162a&=&format=webp&quality=lossless" alt="Artista" fill className="object-cover" />
+        <Image src="/mae.jpg" alt="Artista" fill className="object-cover" />
       </div>
       <div>
         <h1 className="section-title mb-4">Sobre Mim</h1>
         <div className="space-y-4 text-black/80 leading-relaxed">
-          <p>Bem-vinda ao meu ateliê. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut lacinia nulla. Donec convallis vitae dolor sit amet pulvinar.</p>
-          <p>Minha missão é democratizar o acesso à arte, com cursos acessíveis e uma didática acolhedora. Integer aliquet convallis nibh, a hendrerit risus. Nunc ut libero eget erat suscipit volutpat.</p>
-          <p>Ao longo dos anos, desenvolvi uma linguagem própria, inspirada pela natureza e pelas cores suaves. Mauris nec nibh vel ipsum posuere dictum.</p>
+          <p>Bem-vindos ao ateliê! Aqui é um espaço acolhedor, criado com muito carinho para que você se sinta em casa. Nosso ateliê tem uma proposta simples: ser um lugar onde as pessoas possam socializar, aprender e desenvolver suas habilidades no bordado, no seu próprio ritmo e com prazer.</p>
+          <p>O ambiente é caseiro, tranquilo e cheio de boas energias — perfeito para trocar experiências, relaxar e deixar a criatividade fluir. Seja você iniciante ou experiente, o importante é se permitir criar, descobrir novas técnicas e aproveitar cada ponto dessa jornada artesanal.</p>
+          <p>Venha bordar, conversar e fazer parte da turma!</p>
           <p>Obrigada por estar aqui. Espero que a arte te encontre, hoje e sempre.</p>
         </div>
       </div>

@@ -25,6 +25,13 @@ const courses = [
     price: 'R$ 349,00',
     image: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=1600&auto=format&fit=crop',
   },
+  {
+    slug: 'introducao-ao-bordado',
+    title: 'Introdução ao Bordado',
+    description: 'Aprenda os pontos básicos, materiais e finalize um bordado floral simples.',
+    price: 'R$ 199,00',
+    image: 'https://images.unsplash.com/photo-1562572159-4efc207f5aff?q=80&w=1600&auto=format&fit=crop',
+  },
 ];
 
 const galleryPreview = [
@@ -32,6 +39,14 @@ const galleryPreview = [
   'https://i.imgur.com/DUTqYb7.jpg',
   'https://i.imgur.com/u5KKvlw.jpg',
 ];
+
+const testimonials = [
+  'Adorei o curso!',
+  'É muito bom bordar com a Janete',
+  'O espaço é caseiro. Perfeito para quem quer algo simples e terapêutico',
+];
+
+const studentNames = ['Lurdes', 'Telma', 'Katia'];
 
 export default function HomePage() {
   return (
@@ -62,7 +77,7 @@ export default function HomePage() {
       {/* Sobre */}
       <section className="container-narrow mt-20 grid gap-10 md:grid-cols-2 items-center">
         <div className="relative aspect-square overflow-hidden rounded-full scale-90 origin-center">
-          <Image src="https://media.discordapp.net/attachments/1393705889613221928/1421818601010233435/image.png?ex=68dbbcc2&is=68da6b42&hm=29f6397776667d4ce73d84bdb98b8b8c077a25536d4ec126e21cbdcff42c162a&=&format=webp&quality=lossless" alt="Artista" fill className="object-cover" />
+          <Image src="/mae.jpg" alt="Artista" fill className="object-cover" />
         </div>
         <div>
           <h2 className="section-title mb-4">Sobre Mim</h2>
@@ -98,16 +113,16 @@ export default function HomePage() {
         <h2 className="section-title mb-6">Depoimentos</h2>
         <div className="relative overflow-hidden">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1,2,3].map((t) => (
-              <div key={t} className="rounded-2xl border border-black/10 bg-white p-6">
+            {testimonials.map((text, index) => (
+              <div key={index} className="rounded-2xl border border-black/10 bg-white p-6">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-black/10" />
                   <div>
-                    <p className="font-semibold">Aluno {t}</p>
+                    <p className="font-semibold">{studentNames[index]}</p>
                     <p className="text-xs text-black/60">Curso concluído</p>
                   </div>
                 </div>
-                <p className="mt-4 text-sm text-black/80">“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin non luctus augue. Integer in lorem at augue dictum lobortis.”</p>
+                <p className="mt-4 text-sm text-black/80">“{text}”</p>
               </div>
             ))}
           </div>

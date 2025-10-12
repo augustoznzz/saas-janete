@@ -22,6 +22,13 @@ const courses = [
     price: 'R$ 349,00',
     image: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=1600&auto=format&fit=crop',
   },
+  {
+    slug: 'introducao-ao-bordado',
+    title: 'Introdução ao Bordado',
+    description: 'Pontos básicos, materiais e um projeto final para iniciantes.',
+    price: 'R$ 199,00',
+    image: 'https://images.unsplash.com/photo-1562572159-4efc207f5aff?q=80&w=1600&auto=format&fit=crop',
+  },
 ];
 
 export default function CursosPage() {

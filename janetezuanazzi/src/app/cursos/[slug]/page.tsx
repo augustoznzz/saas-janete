@@ -52,6 +52,18 @@ const courses: Course[] = [
       'Projeto final: paisagem a óleo'
     ],
   },
+  {
+    slug: 'introducao-ao-bordado',
+    title: 'Introdução ao Bordado',
+    description: 'Aprenda os pontos essenciais e materiais do bordado à mão.',
+    price: 'R$ 199,00',
+    modules: [
+      'Materiais e preparação do tecido',
+      'Pontos básicos: alinhavo, atrás e corrente',
+      'Aplicações, preenchimentos e acabamento',
+      'Projeto final: mini floral bordado'
+    ],
+  },
 ];
 
 export function generateStaticParams() {
