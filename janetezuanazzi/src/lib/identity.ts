@@ -46,12 +46,26 @@ export async function login(email: string, password: string) {
       const ct = res.headers.get('content-type') || '';
       if (ct.includes('application/json')) {
         const j = await res.json();
-        msg = j.error || j.msg || msg;
+        const err = (j.error || j.error_description || j.msg || '').toString().toLowerCase();
+        if (err.includes('confirm') || err.includes('verify')) {
+          msg = 'Email não confirmado. Verifique sua caixa de entrada e confirme seu cadastro.';
+        } else if (err.includes('invalid_grant')) {
+          msg = 'Email ou senha incorretos.';
+        } else if (err.includes('password')) {
+          msg = 'Senha inválida.';
+        } else if (j.error || j.msg) {
+          msg = (j.error || j.msg) as string;
+        }
       } else {
         const t = await res.text();
         if (t?.includes('<!DOCTYPE html')) {
           msg = 'Endpoint de Identity indisponível. Rode "netlify dev" ou defina NEXT_PUBLIC_IDENTITY_GOTRUE_URL.';
-        } else if (t) msg = t;
+        } else if (t) {
+          const tl = t.toLowerCase();
+          if (tl.includes('invalid_grant')) msg = 'Email ou senha incorretos.';
+          else if (tl.includes('confirm') || tl.includes('verify')) msg = 'Email não confirmado. Verifique sua caixa de entrada.';
+          else msg = t;
+        }
       }
     } catch {}
     throw new Error(msg);

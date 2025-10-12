@@ -58,14 +58,8 @@ export default function CriarContaPage() {
     setLoading(true);
     try {
       await identitySignup(formData.email, formData.password, formData.name);
-      // Many setups require email confirmation; for simplicity, attempt login right away
-      await identityLogin(formData.email, formData.password);
-      const token = await getAccessToken();
-      if (!token) throw new Error('Falha ao obter token');
-      const sres = await fetch('/.netlify/functions/session', { headers: { Authorization: `Bearer ${token}` } });
-      if (!sres.ok) throw new Error('Falha ao iniciar sessão');
-      await fetch('/.netlify/functions/me', { headers: { Authorization: `Bearer ${token}` } });
-      router.push('/aluno/dashboard');
+      // Não tentar login automático: muitas configurações exigem confirmação por email
+      router.push('/login?message=conta-criada');
     } catch (err: any) {
       setError(err.message || 'Erro ao criar conta. Tente novamente.');
     } finally {
