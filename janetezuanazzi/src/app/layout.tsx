@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: 'Ateliê - Cursos e Portfólio',
     template: '%s | Ateliê',
   },
-  description: 'Plataforma de cursos online e portfólio do ateliê.',
+  description: 'Plataforma de bordado online.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
