@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: 'Ateliê - Cursos e Portfólio',
     template: '%s | Ateliê',
   },
-  description: 'Plataforma de bordado online.',
+  description: 'Ateliê com mais de 20 anos de experiência em bordado, cursos acessíveis e uma didática acolhedora.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -45,7 +45,7 @@ export function Header() {
           <Link href="https://wa.me/554899819211?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20melhor%20sobre%20o%20seu%20trabalho%20e%20os%20valores%20das%20aulas%20presenciais" target="_blank" aria-label="WhatsApp" className="p-2 rounded-full hover:bg-black/5">
             <Phone className="h-5 w-5" />
           </Link>
-          <Link href="/login" className="cta-button ml-2">Área do Aluno</Link>
+          <Link href="/login" className="cta-button ml-2 hidden md:inline-flex">Área do Aluno</Link>
           {/* Mobile toggle */}
           <button
             type="button"
@@ -93,6 +93,7 @@ export function Header() {
               <Phone className="h-5 w-5" />
             </Link>
           </div>
+          <Link href="/login" className="cta-button w-full mt-4">Área do Aluno</Link>
         </div>
       </div>
     </header>
