@@ -10,7 +10,10 @@ const nextConfig = {
     ]
   },
   experimental: {
-    typedRoutes: true
+    // Disabled for Netlify build: typedRoutes enforces RouteImpl types on router.
+    // The login page uses a dynamic string from query for redirect, which is not
+    // statically typed as a RouteImpl. Disabling avoids build-time type errors.
+    typedRoutes: false
   }
 };
 

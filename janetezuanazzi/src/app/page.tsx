@@ -30,7 +30,7 @@ const courses = [
     title: 'Introdução ao Bordado',
     description: 'Aprenda os pontos básicos, materiais e finalize um bordado floral simples.',
     price: 'R$ 199,00',
-    image: 'https://images.unsplash.com/photo-1562572159-4efc207f5aff?q=80&w=1600&auto=format&fit=crop',
+    image: '/introducao-ao-bordado.jpg',
   },
 ];
 

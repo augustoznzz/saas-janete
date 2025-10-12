@@ -73,7 +73,7 @@ export const mockCourses: Course[] = [
   {
     slug: 'introducao-ao-bordado',
     title: 'Introdução ao Bordado',
-    coverImageUrl: 'https://images.unsplash.com/photo-1562572159-4efc207f5aff?q=80&w=1200&auto=format&fit=crop',
+    coverImageUrl: '/introducao-ao-bordado.jpg',
     modules: [
       {
         id: 'mod1',

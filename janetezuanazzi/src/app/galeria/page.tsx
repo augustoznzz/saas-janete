@@ -14,7 +14,7 @@ export default function GaleriaPage() {
 
   return (
     <div className="container-narrow mt-6">
-      <h1 className="section-title mb-8">Galeria de Trabalhos</h1>
+      <h1 className="section-title mb-8">Galeria de Bordados das Alunas</h1>
       <div className="columns-2 md:columns-3 gap-4">
         {images.map((src, i) => (
           <button key={i} className="mb-4 break-inside-avoid overflow-hidden rounded-xl focus:outline-none focus:ring-2 focus:ring-black/20" onClick={() => setActive(src)}>
