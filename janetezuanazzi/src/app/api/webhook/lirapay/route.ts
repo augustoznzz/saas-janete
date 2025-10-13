@@ -74,28 +74,52 @@ export async function POST(request: NextRequest) {
 async function handlePaymentPaid(transaction: any) {
   console.log('Payment confirmed:', transaction.id);
   
-  // TODO: Implement your business logic here:
-  // 1. Update database with payment confirmation
-  // 2. Grant course access to user
-  // 3. Send confirmation email
-  // 4. Create user account if doesn't exist
-  
   const courseSlug = transaction.metadata?.course_slug;
   const customerEmail = transaction.customer?.email;
+  const customerName = transaction.customer?.name;
+  const customerPassword = transaction.metadata?.customer_password;
+  const customerCpf = transaction.customer?.document;
+  const customerPhone = transaction.customer?.phone;
   
-  if (courseSlug && customerEmail) {
-    // Example: Store enrollment in database
-    console.log(`Enrolling ${customerEmail} in course ${courseSlug}`);
+  if (!courseSlug || !customerEmail || !customerPassword) {
+    console.error('Missing required data for enrollment:', {
+      courseSlug,
+      customerEmail,
+      hasPassword: !!customerPassword,
+    });
+    return;
+  }
+
+  try {
+    // Create user account and enroll in course
+    console.log(`Creating account and enrolling ${customerEmail} in course ${courseSlug}`);
     
-    // You can call your Netlify functions here
-    // await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/.netlify/functions/enroll`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     email: customerEmail,
-    //     courseSlug,
-    //     transactionId: transaction.id,
-    //   }),
-    // });
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const response = await fetch(`${siteUrl}/.netlify/functions/create-user-and-enroll`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: customerEmail,
+        password: customerPassword,
+        name: customerName,
+        courseSlug,
+        transactionId: transaction.id,
+        cpf: customerCpf,
+        phone: customerPhone,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Failed to create user and enroll:', errorData);
+    } else {
+      const data = await response.json();
+      console.log('User created and enrolled successfully:', data);
+    }
+  } catch (error) {
+    console.error('Error in handlePaymentPaid:', error);
   }
 }
 
