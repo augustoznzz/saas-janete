@@ -3,7 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "npm --prefix ./janetezuanazzi run dev",
+    "dev": "netlify dev",
+    "dev:app": "npm --prefix ./janetezuanazzi run dev",
+    "dev:next": "npm --prefix ./janetezuanazzi run dev",
     "build": "npm --prefix ./janetezuanazzi run build",
     "start": "npm --prefix ./janetezuanazzi run start",
     "install:app": "npm --prefix ./janetezuanazzi install"
@@ -11,5 +13,8 @@
   "dependencies": {
     "@netlify/functions": "^4.3.0",
     "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
   }
 }
