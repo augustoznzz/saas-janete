@@ -105,7 +105,7 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
         <aside className="h-fit rounded-2xl border border-black/10 bg-white p-6">
           <p className="text-sm text-black/60">Preço</p>
           <p className="text-3xl font-serif">{course.price}</p>
-          <a href="#" className="cta-button mt-4 w-full inline-flex">Quero me inscrever</a>
+          <Link href={`/checkout/${course.slug}`} className="cta-button mt-4 w-full inline-flex">Quero me inscrever</Link>
         </aside>
       </div>
     </div>
