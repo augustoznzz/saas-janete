@@ -5,7 +5,7 @@ import { login as identityLogin, getAccessToken } from '@/lib/identity';
 
 function LoginPageContent() {
   const router = useRouter();
-  const [email, setEmail] = React.useState('');
+  const [identifier, setIdentifier] = React.useState(''); // email ou CPF
   const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -31,7 +31,24 @@ function LoginPageContent() {
     setLoading(true);
     try {
       // Identity login
-      await identityLogin(email, password);
+      const maybeCpf = identifier.replace(/\D/g, '');
+      let emailToUse = identifier;
+      if (maybeCpf.length === 11) {
+        // resolve CPF -> email via Netlify function
+        const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
+        const res = await fetch(`${siteUrl}/.netlify/functions/login-by-cpf`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'get_email', cpf: maybeCpf }),
+        });
+        if (!res.ok) {
+          const t = await res.text();
+          throw new Error(t || 'CPF não encontrado');
+        }
+        const data = await res.json();
+        emailToUse = data.email;
+      }
+      await identityLogin(emailToUse, password);
       const token = await getAccessToken();
       if (!token) throw new Error('Falha ao obter token');
       // Set SSR cookie via Netlify Function
@@ -72,12 +89,12 @@ function LoginPageContent() {
           
           <form className="space-y-4" onSubmit={onSubmit}>
             <div>
-              <label className="block text-sm mb-1">Email</label>
+              <label className="block text-sm mb-1">Email ou CPF</label>
               <input
-                type="email"
+                type="text"
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-pink"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
               />
             </div>

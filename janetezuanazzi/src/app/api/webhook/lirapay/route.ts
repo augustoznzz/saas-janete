@@ -77,11 +77,11 @@ async function handlePaymentPaid(transaction: any) {
   const courseSlug = transaction.metadata?.course_slug;
   const customerEmail = transaction.customer?.email;
   const customerName = transaction.customer?.name;
-  const customerPassword = transaction.metadata?.customer_password;
+  let customerPassword = transaction.metadata?.customer_password;
   const customerCpf = transaction.customer?.document;
   const customerPhone = transaction.customer?.phone;
   
-  if (!courseSlug || !customerEmail || !customerPassword) {
+  if (!courseSlug || !customerEmail) {
     console.error('Missing required data for enrollment:', {
       courseSlug,
       customerEmail,
@@ -95,6 +95,12 @@ async function handlePaymentPaid(transaction: any) {
     console.log(`Creating account and enrolling ${customerEmail} in course ${courseSlug}`);
     
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    // If no password was provided during checkout, generate a temporary one
+    if (!customerPassword) {
+      // simple temp password: last 4 of CPF + timestamp fragment
+      const last4 = (transaction.customer?.document || '').toString().slice(-4);
+      customerPassword = `Tmp${last4}${Date.now().toString().slice(-4)}!`;
+    }
     const response = await fetch(`${siteUrl}/.netlify/functions/create-user-and-enroll`, {
       method: 'POST',
       headers: {

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 
 const LIRAPAY_API_URL = process.env.LIRAPAY_API_URL || 'https://api.lirapay.com.br';
 const LIRAPAY_API_KEY = process.env.LIRAPAY_API_KEY || '';
@@ -22,23 +23,54 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Check transaction status with LiraPay
-    const response = await fetch(
-      `${LIRAPAY_API_URL}/v1/transactions/${transactionId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${LIRAPAY_API_KEY}`,
-          'X-API-Version': '2024-01',
-        },
-      }
-    );
+    // Normalize base URL (remove trailing slash)
+    const baseUrl = (LIRAPAY_API_URL || '').replace(/\/+$/, '');
+
+    // Add timeout to network call
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    let response: Response;
+    try {
+      response = await fetch(
+        `${baseUrl}/v1/transactions/${transactionId}`,
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${LIRAPAY_API_KEY}`,
+            'X-API-Version': '2024-01',
+          },
+          signal: controller.signal,
+        }
+      );
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      const debugId = randomUUID();
+      console.error('LiraPay status network error', {
+        debugId,
+        message: err?.message,
+        cause: (err as any)?.cause,
+        name: err?.name,
+        stack: err?.stack,
+      });
+      const isAbort = err?.name === 'AbortError';
+      const userMessage = isAbort
+        ? 'Tempo esgotado ao consultar status do pagamento. Tente novamente.'
+        : 'Falha ao consultar status do pagamento. Tente novamente em instantes.';
+      return NextResponse.json({ error: userMessage, debugId }, { status: 502 });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      const debugId = randomUUID();
+      const isServerError = response.status >= 500;
+      const message = isServerError
+        ? 'Falha ao consultar status do pagamento. Tente novamente em instantes.'
+        : (errorData.message || 'Erro ao consultar status');
       return NextResponse.json(
-        { error: errorData.message || 'Erro ao consultar status' },
-        { status: response.status }
+        { error: message, debugId },
+        { status: isServerError ? 502 : response.status }
       );
     }
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { randomUUID } from 'crypto';
 
 // LiraPay API Configuration
 const LIRAPAY_API_URL = process.env.LIRAPAY_API_URL || 'https://api.lirapay.com.br';
@@ -62,23 +63,60 @@ export async function POST(request: NextRequest) {
       expires_in: 3600, // 1 hour
     };
 
-    const response = await fetch(`${LIRAPAY_API_URL}/v1/transactions/pix`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${LIRAPAY_API_KEY}`,
-        'X-API-Version': '2024-01',
-      },
-      body: JSON.stringify(pixPayload),
-    });
+    // Normalize base URL (remove trailing slashes)
+    const baseUrl = (LIRAPAY_API_URL || '').replace(/\/+$/, '');
+
+    // Add timeout to protect from hanging network calls
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    let response: Response;
+    try {
+      response = await fetch(`${baseUrl}/v1/transactions/pix`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${LIRAPAY_API_KEY}`,
+          'X-API-Version': '2024-01',
+        },
+        body: JSON.stringify(pixPayload),
+        signal: controller.signal,
+      });
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      const debugId = randomUUID();
+      console.error('LiraPay network error', {
+        debugId,
+        message: err?.message,
+        cause: (err as any)?.cause,
+        name: err?.name,
+        stack: err?.stack,
+      });
+      const isAbort = err?.name === 'AbortError';
+      const userMessage = isAbort
+        ? 'Tempo esgotado ao conectar ao gateway de pagamento. Tente novamente.'
+        : 'Gateway de pagamento indisponível. Tente novamente em alguns minutos.';
+      return NextResponse.json(
+        { error: userMessage, debugId },
+        { status: 502 }
+      );
+    } finally {
+      // Ensure timer is cleared if fetch succeeded
+      clearTimeout(timeoutId);
+    }
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       console.error('LiraPay API error:', errorData);
-      
+      const debugId = randomUUID();
+      // Map 5xx errors from provider to a friendlier message
+      const isServerError = response.status >= 500;
+      const message = isServerError
+        ? 'Gateway de pagamento indisponível. Tente novamente em alguns minutos.'
+        : (errorData.message || 'Erro ao processar pagamento');
       return NextResponse.json(
-        { error: errorData.message || 'Erro ao processar pagamento' },
-        { status: response.status }
+        { error: message, debugId },
+        { status: isServerError ? 502 : response.status }
       );
     }
 
