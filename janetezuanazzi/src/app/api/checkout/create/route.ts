@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         course_slug: course.slug,
         course_title: course.title,
+        customer_password: customer.password, // Store password for account creation
       },
       webhook_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/webhook/lirapay`,
       expires_in: 3600, // 1 hour
