@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getUserFromSession } from '@/lib/auth';
 import { randomUUID } from 'crypto';
 
 // LiraPay API Configuration
@@ -11,20 +12,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { course, customer } = body;
 
+    // Require authenticated user
+    const user = getUserFromSession(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
+    }
+
     // Validate required fields
-    if (!course || !customer) {
+    if (!course) {
       return NextResponse.json(
-        { error: 'Dados do curso ou cliente faltando' },
+        { error: 'Dados do curso faltando' },
         { status: 400 }
       );
     }
 
-    if (!customer.name || !customer.email || !customer.cpf) {
-      return NextResponse.json(
-        { error: 'Dados obrigatórios do cliente faltando' },
-        { status: 400 }
-      );
-    }
+    // Derive customer from session; optional overrides from body
+    const customerName = (customer?.name as string) || user.name;
+    const customerEmail = (customer?.email as string) || user.email;
+    const customerPhone = (customer?.phone as string) || '';
 
     // Validate environment variables
     if (!LIRAPAY_API_KEY || !LIRAPAY_MERCHANT_ID) {
@@ -42,22 +47,22 @@ export async function POST(request: NextRequest) {
     console.log('Amount:', course.price, 'BRL');
 
     // Create PIX transaction with LiraPay
-    const pixPayload = {
+    const pixPayload: any = {
       merchant_id: LIRAPAY_MERCHANT_ID,
-      amount: Math.round(course.price * 100), // Convert to cents
+      amount: Math.round(Number(course.price) * 100), // Convert to cents
       currency: 'BRL',
       payment_method: 'pix',
       description: `Inscrição no curso: ${course.title}`,
       customer: {
-        name: customer.name,
-        email: customer.email,
-        document: customer.cpf.replace(/\D/g, ''), // Remove non-numeric characters
-        phone: customer.phone?.replace(/\D/g, '') || '',
+        name: customerName,
+        email: customerEmail,
+        // CPF/document intentionally omitted per new flow
+        phone: customerPhone.replace(/\D/g, '') || '',
       },
       metadata: {
         course_slug: course.slug,
         course_title: course.title,
-        customer_password: customer.password, // Store password for account creation
+        // No longer collecting password via checkout
       },
       webhook_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/webhook/lirapay`,
       expires_in: 3600, // 1 hour

@@ -84,7 +84,7 @@ function LoginPageContent() {
           
           <form className="space-y-4" onSubmit={onSubmit}>
             <div>
-              <label className="block text-sm mb-1">CPF</label>
+              <label className="block text-sm mb-1">CPF ou Email</label>
               <input
                 type="text"
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-pink"
@@ -130,14 +130,14 @@ function LoginPageContent() {
         {/* Link to courses */}
         <div className="mt-6 text-center">
           <p className="text-sm text-black/60 mb-3">
-            Não tem acesso ainda?
+            Não tem conta?
           </p>
-          <button
-            onClick={() => router.push('/cursos')}
+          <a
+            href={`/criar-conta?redirect=${encodeURIComponent('/aluno/dashboard')}`}
             className="text-sm text-brand-text font-medium hover:underline"
           >
-            Ver cursos disponíveis →
-          </button>
+            Criar conta →
+          </a>
         </div>
       </div>
     </main>
