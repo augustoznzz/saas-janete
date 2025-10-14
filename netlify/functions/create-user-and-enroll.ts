@@ -83,19 +83,67 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
         
         // If user already exists, try to update their data instead
         if (errorText.includes('already') || errorText.includes('exists')) {
-          console.log('User already exists, updating enrollment...');
-          
-          // TODO: Update existing user to add course access
-          // For now, just return success as they already have an account
+          console.log('User already exists, attempting to update enrollment via admin API...');
+
+          if (!adminToken) {
+            console.error('Missing NETLIFY_ADMIN_TOKEN. Cannot update existing user enrollment.');
+            return {
+              statusCode: 500,
+              body: JSON.stringify({ error: 'Admin token not configured to update existing user.' }),
+            };
+          }
+
+          // Find existing user by email
+          const listRes = await fetch(`${identityUrl}/.netlify/identity/admin/users?email=${encodeURIComponent(email)}`, {
+            headers: { Authorization: `Bearer ${adminToken}` },
+          });
+          if (!listRes.ok) {
+            const t = await listRes.text();
+            throw new Error(`Failed to lookup user by email: ${t || listRes.status}`);
+          }
+          const listData = await listRes.json();
+          const existing = Array.isArray(listData) ? listData[0] : null;
+          if (!existing?.id) {
+            throw new Error('Existing user not found by email');
+          }
+
+          const currentMeta = existing.user_metadata || {};
+          const enrolled: string[] = Array.isArray(currentMeta.enrolled_courses) ? currentMeta.enrolled_courses : [];
+          const txs: string[] = Array.isArray(currentMeta.transaction_ids) ? currentMeta.transaction_ids : [];
+          if (!enrolled.includes(courseSlug)) enrolled.push(courseSlug);
+          if (transactionId && !txs.includes(transactionId)) txs.push(transactionId);
+
+          const updateRes = await fetch(`${identityUrl}/.netlify/identity/admin/users/${existing.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({
+              data: {
+                ...currentMeta,
+                full_name: currentMeta.full_name || name,
+                cpf: currentMeta.cpf || (cpf || ''),
+                phone: currentMeta.phone || (phone || ''),
+                enrolled_courses: enrolled,
+                transaction_ids: txs,
+                updated_via: 'checkout_webhook',
+                updated_at: new Date().toISOString(),
+              },
+            }),
+          });
+          if (!updateRes.ok) {
+            const t = await updateRes.text();
+            throw new Error(`Failed to update user enrollment: ${t || updateRes.status}`);
+          }
+
+          console.log('Existing user enrollment updated:', { email, courseSlug });
           return {
             statusCode: 200,
             body: JSON.stringify({
               success: true,
-              message: 'User already exists, enrollment updated',
-              enrollment: {
-                courseSlug,
-                transactionId,
-              },
+              message: 'User already existed. Enrollment updated.',
+              enrollment: { courseSlug, transactionId },
             }),
           };
         }

@@ -14,6 +14,8 @@ export default function CoursePlayerPage() {
   const router = useRouter();
   const slug = params?.slug as string;
   const course = getCourseBySlug(slug);
+  const [checkingAccess, setCheckingAccess] = React.useState(true);
+  const [hasAccess, setHasAccess] = React.useState(false);
 
   const allLessons = React.useMemo(() => {
     return course ? course.modules.flatMap((m) => m.lessons) : [];
@@ -22,8 +24,40 @@ export default function CoursePlayerPage() {
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [progress, setProgress] = React.useState<CourseProgress>({});
 
+  // Verify enrollment before loading course content
   React.useEffect(() => {
     if (!course) return;
+    (async () => {
+      try {
+        const token = await getAccessToken();
+        if (!token) {
+          router.replace(`/login?redirect=/aluno/cursos/${course.slug}`);
+          return;
+        }
+        const res = await fetch('/.netlify/identity/user', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          router.replace('/aluno/dashboard');
+          return;
+        }
+        const user = await res.json();
+        const enrolled: string[] = Array.isArray(user?.user_metadata?.enrolled_courses)
+          ? user.user_metadata.enrolled_courses
+          : [];
+        if (!enrolled.includes(course.slug)) {
+          router.replace('/aluno/dashboard');
+          return;
+        }
+        setHasAccess(true);
+      } finally {
+        setCheckingAccess(false);
+      }
+    })();
+  }, [course, router]);
+
+  React.useEffect(() => {
+    if (!course || !hasAccess) return;
     const prog = readCourseProgress(course.slug);
     setProgress(prog);
     // Fetch remote progress for merge
@@ -46,7 +80,7 @@ export default function CoursePlayerPage() {
     })();
     const firstIncomplete = allLessons.findIndex((l) => !prog[l.id]?.completed);
     setActiveIndex(firstIncomplete >= 0 ? firstIncomplete : 0);
-  }, [course, allLessons]);
+  }, [course, allLessons, hasAccess]);
 
   const handleLessonSelect = React.useCallback((lessonId: string) => {
     const index = allLessons.findIndex(lesson => lesson.id === lessonId);
@@ -88,6 +122,10 @@ export default function CoursePlayerPage() {
         <button className="text-emerald-700 underline" onClick={() => router.push('/aluno/dashboard')}>Voltar</button>
       </div>
     );
+  }
+
+  if (checkingAccess) {
+    return null;
   }
 
   const lesson = allLessons[activeIndex];

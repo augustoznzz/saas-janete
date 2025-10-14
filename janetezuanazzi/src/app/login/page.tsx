@@ -81,12 +81,6 @@ function LoginPageContent() {
               {successMessage}
             </div>
           )}
-
-          <div className="mb-6 p-4 bg-brand-pinkLight rounded-lg border border-black/10">
-            <p className="text-sm text-black/70">
-              💡 <strong>Ainda não tem uma conta?</strong> Sua conta será criada automaticamente ao realizar a compra de um curso.
-            </p>
-          </div>
           
           <form className="space-y-4" onSubmit={onSubmit}>
             <div>
