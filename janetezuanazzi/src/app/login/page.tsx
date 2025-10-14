@@ -7,6 +7,7 @@ function LoginPageContent() {
   const router = useRouter();
   const [identifier, setIdentifier] = React.useState(''); // email ou CPF
   const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
@@ -99,15 +100,25 @@ function LoginPageContent() {
               />
             </div>
             <div>
-              <label className="block text-sm mb-1">Senha</label>
+            <label className="block text-sm mb-1">Senha</label>
+            <div className="relative">
               <input
-                type="password"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-pink"
+                type={showPassword ? 'text' : 'password'}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 pr-12 focus:outline-none focus:ring-2 focus:ring-brand-pink"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-3 my-auto text-xs text-black/60 hover:text-black/80"
+                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+              >
+                {showPassword ? 'Ocultar' : 'Mostrar'}
+              </button>
             </div>
+          </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <button
               type="submit"
@@ -118,7 +129,7 @@ function LoginPageContent() {
             </button>
           </form>
           <div className="mt-4 text-center">
-            <a href="#" className="text-sm text-brand-text/60 hover:text-brand-text hover:underline">Esqueci minha senha</a>
+            <a href="/definir-senha" className="text-sm text-brand-text/60 hover:text-brand-text hover:underline">Esqueci minha senha</a>
           </div>
         </div>
 
