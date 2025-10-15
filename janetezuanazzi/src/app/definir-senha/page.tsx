@@ -5,30 +5,20 @@ import { useRouter } from 'next/navigation';
 
 function DefinePasswordPageContent() {
   const router = useRouter();
-  const [cpf, setCpf] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
 
-  function formatCpf(value: string) {
-    const digits = value.replace(/\D/g, '').slice(0, 11);
-    // Simple mask 000.000.000-00
-    return digits
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-  }
-
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
-      const cleanCpf = cpf.replace(/\D/g, '');
-      if (cleanCpf.length !== 11) {
-        throw new Error('Informe um CPF válido com 11 dígitos.');
+      if (!email || !email.includes('@')) {
+        throw new Error('Informe um email válido.');
       }
       if (password.length < 8) {
         throw new Error('A senha deve ter pelo menos 8 caracteres.');
@@ -36,7 +26,7 @@ function DefinePasswordPageContent() {
       const res = await fetch('/api/account/set-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cpf: cleanCpf, password }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -71,14 +61,13 @@ function DefinePasswordPageContent() {
           ) : (
             <form className="space-y-4" onSubmit={onSubmit}>
               <div>
-                <label className="block text-sm mb-1">CPF</label>
+                <label className="block text-sm mb-1">Email</label>
                 <input
-                  type="text"
-                  inputMode="numeric"
+                  type="email"
                   className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-pink"
-                  value={cpf}
-                  onChange={(e) => setCpf(formatCpf(e.target.value))}
-                  placeholder="000.000.000-00"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
                   required
                 />
               </div>
