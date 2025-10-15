@@ -1,13 +1,20 @@
 'use client';
 
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { signup } from '@/lib/identity';
 
 export default function CreateAccountPage() {
   const router = useRouter();
-  const sp = useSearchParams();
-  const redirect = sp.get('redirect') || '/aluno/dashboard';
+  const [redirect, setRedirect] = React.useState('/aluno/dashboard');
+
+  React.useEffect(() => {
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const r = sp.get('redirect');
+      if (r) setRedirect(r);
+    } catch {}
+  }, []);
 
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');

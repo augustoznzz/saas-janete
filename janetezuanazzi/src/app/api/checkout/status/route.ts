@@ -4,6 +4,9 @@ import { randomUUID } from 'crypto';
 const LIRAPAY_API_URL = process.env.LIRAPAY_API_URL || 'https://api.lirapay.com.br';
 const LIRAPAY_API_KEY = process.env.LIRAPAY_API_KEY || '';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
