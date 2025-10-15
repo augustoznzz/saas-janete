@@ -75,7 +75,7 @@ async function handlePaymentPaid(transaction: any) {
   console.log('Payment confirmed:', transaction.id);
   
   const courseSlug = transaction.metadata?.course_slug;
-  const customerEmail = transaction.customer?.email;
+  const customerEmail = transaction.metadata?.session_email || transaction.customer?.email;
   const customerName = transaction.customer?.name;
   let customerPassword = transaction.metadata?.customer_password;
   const customerCpf = transaction.customer?.document;

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getUserFromSession } from '@/lib/auth';
 
 type Course = {
   slug: string;
@@ -90,13 +89,7 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
   }
 
   const hideVideo = course.slug === 'aquarela-iniciantes';
-  const user = getUserFromSession();
-  const whenLoggedHref = course.slug === 'introducao-ao-bordado'
-    ? 'https://pay.lirapaybr.com/cUSkzMqw'
-    : `/checkout/${course.slug}`;
-  const enrollHref = user
-    ? whenLoggedHref
-    : `/criar-conta?redirect=${encodeURIComponent(`/cursos/${course.slug}`)}`;
+  const enrollHref = `/enroll/${course.slug}`;
 
   return (
     <div className="container-narrow py-10">

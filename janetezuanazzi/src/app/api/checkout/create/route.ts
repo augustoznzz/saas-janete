@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         course_slug: course.slug,
         course_title: course.title,
+        session_email: customerEmail,
         // No longer collecting password via checkout
       },
       webhook_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/webhook/lirapay`,
