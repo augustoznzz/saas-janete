@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 
+// ============================================
+// NOTA: Esta API foi desativada.
+// Agora usamos redirecionamento direto para o Kiwify.
+// Mantido apenas para referência histórica.
+// ============================================
+
 const LIRAPAY_API_URL = process.env.LIRAPAY_API_URL || 'https://api.lirapay.com.br';
 const LIRAPAY_API_KEY = process.env.LIRAPAY_API_KEY || '';
 
@@ -8,6 +14,11 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
+  // API desativada - agora usando Kiwify
+  return NextResponse.json(
+    { error: 'API desativada. Use o redirecionamento direto para Kiwify.' },
+    { status: 410 } // 410 Gone
+  );
   try {
     const { searchParams } = new URL(request.url);
     const transactionId = searchParams.get('transactionId');

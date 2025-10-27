@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
+// ============================================
+// NOTA: Este webhook foi desativado.
+// Agora usamos o webhook do Kiwify em /api/webhook/kiwify
+// Mantido apenas para referência histórica.
+// ============================================
+
 const LIRAPAY_WEBHOOK_SECRET = process.env.LIRAPAY_WEBHOOK_SECRET || '';
 
 /**
- * Webhook endpoint to receive payment status updates from LiraPay
+ * Webhook endpoint to receive payment status updates from LiraPay (DESATIVADO)
  * 
  * LiraPay will send POST requests to this endpoint when payment status changes:
  * - payment.created
@@ -14,6 +20,12 @@ const LIRAPAY_WEBHOOK_SECRET = process.env.LIRAPAY_WEBHOOK_SECRET || '';
  * - payment.cancelled
  */
 export async function POST(request: NextRequest) {
+  // Webhook desativado - agora usando Kiwify
+  console.log('Webhook LiraPay recebido (desativado) - Use /api/webhook/kiwify');
+  return NextResponse.json(
+    { error: 'Webhook desativado. Use /api/webhook/kiwify' },
+    { status: 410 } // 410 Gone
+  );
   try {
     const body = await request.text();
     const signature = request.headers.get('x-lirapay-signature') || '';

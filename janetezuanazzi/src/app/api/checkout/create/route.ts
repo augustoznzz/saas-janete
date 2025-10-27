@@ -2,12 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUserFromSession } from '@/lib/auth';
 import { randomUUID } from 'crypto';
 
-// LiraPay API Configuration
+// ============================================
+// NOTA: Esta API foi desativada.
+// Agora usamos redirecionamento direto para o Kiwify.
+// Mantido apenas para referência histórica.
+// ============================================
+
+// LiraPay API Configuration (DESATIVADO)
 const LIRAPAY_API_URL = process.env.LIRAPAY_API_URL || 'https://api.lirapay.com.br';
 const LIRAPAY_API_KEY = process.env.LIRAPAY_API_KEY || '';
 const LIRAPAY_MERCHANT_ID = process.env.LIRAPAY_MERCHANT_ID || '';
 
 export async function POST(request: NextRequest) {
+  // API desativada - agora usando Kiwify
+  return NextResponse.json(
+    { error: 'API desativada. Use o redirecionamento direto para Kiwify.' },
+    { status: 410 } // 410 Gone
+  );
   try {
     const body = await request.json();
     const { course, customer } = body;
