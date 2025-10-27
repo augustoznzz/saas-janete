@@ -13,45 +13,6 @@ type Course = {
 
 const courses: Course[] = [
   {
-    slug: 'aquarela-iniciantes',
-    title: 'Aquarela para Iniciantes',
-    description: 'Curso completo para começar na aquarela com confiança. Materiais, técnicas e projetos.',
-    price: 'R$ 249,00',
-    modules: [
-      'Introdução e materiais',
-      'Lavagens e gradações',
-      'Texturas e salpicos',
-      'Flores simples',
-      'Projeto final: composição botânica'
-    ],
-  },
-  {
-    slug: 'ilustracao-botanica',
-    title: 'Ilustração Botânica',
-    description: 'Do esboço à pintura final, com foco em observação e precisão das formas.',
-    price: 'R$ 299,00',
-    modules: [
-      'Referências e esboço',
-      'Volume e luz',
-      'Cores e camadas',
-      'Detalhes e acabamento',
-      'Projeto final: lâmina botânica'
-    ],
-  },
-  {
-    slug: 'pintura-a-oleo',
-    title: 'Pintura a óleo',
-    description: 'Técnicas essenciais de pintura a óleo: materiais, mistura de cores e camadas.',
-    price: 'R$ 349,00',
-    modules: [
-      'Materiais e preparação da tela',
-      'Cores, solventes e médiums',
-      'Blocos de cor e valores',
-      'Camadas e acabamento',
-      'Projeto final: paisagem a óleo'
-    ],
-  },
-  {
     slug: 'introducao-ao-bordado',
     title: 'Introdução ao Bordado',
     description: 'Aprenda os pontos essenciais e materiais do bordado à mão.',

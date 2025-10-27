@@ -169,11 +169,8 @@ async function handleOrderChargedback(data: any) {
  */
 function mapProductIdToCourseSlug(productId: string): string | null {
   const productMap: Record<string, string> = {
-    // Adicione os IDs dos seus produtos do Kiwify aqui
-    // 'PRODUCT_ID_1': 'aquarela-iniciantes',
-    // 'PRODUCT_ID_2': 'ilustracao-botanica',
-    // 'PRODUCT_ID_3': 'pintura-a-oleo',
-    // 'PRODUCT_ID_4': 'introducao-ao-bordado',
+    // Adicione o ID do seu produto do Kiwify aqui
+    // 'PRODUCT_ID_BORDADO': 'introducao-ao-bordado',
   };
   
   return productMap[productId] || null;

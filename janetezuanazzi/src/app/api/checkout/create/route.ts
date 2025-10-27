@@ -38,8 +38,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Derive customer from session; optional overrides from body
-    const customerName = (customer?.name as string) || user.name;
-    const customerEmail = (customer?.email as string) || user.email;
+    const customerName = (customer?.name as string) || user?.name || '';
+    const customerEmail = (customer?.email as string) || user?.email || '';
     const customerPhone = (customer?.phone as string) || '';
 
     // Validate environment variables

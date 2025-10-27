@@ -2,27 +2,6 @@ import { CourseCard } from '@/components/CourseCard';
 
 const courses = [
   {
-    slug: 'aquarela-iniciantes',
-    title: 'Aquarela para Iniciantes',
-    description: 'Aprenda as técnicas essenciais de aquarela com exercícios práticos e projetos guiados.',
-    price: 'R$ 249,00',
-    image: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    slug: 'ilustracao-botanica',
-    title: 'Ilustração Botânica',
-    description: 'Composições botânicas com lápis de cor e aquarela, do esboço à finalização.',
-    price: 'R$ 299,00',
-    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
-    slug: 'pintura-a-oleo',
-    title: 'Pintura a Óleo',
-    description: 'Domine camadas, mistura de cores e acabamento em óleo com projetos autorais.',
-    price: 'R$ 349,00',
-    image: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=1600&auto=format&fit=crop',
-  },
-  {
     slug: 'introducao-ao-bordado',
     title: 'Introdução ao Bordado',
     description: 'Pontos básicos, materiais e um projeto final para iniciantes.',

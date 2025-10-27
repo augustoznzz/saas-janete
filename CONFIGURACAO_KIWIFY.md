@@ -15,15 +15,10 @@ Para cada curso, você precisa criar um produto no Kiwify:
 1. Acesse o painel do Kiwify
 2. Vá em **Produtos** → **Novo Produto**
 3. Configure:
-   - **Nome do produto**: Nome do curso (ex: "Aquarela para Iniciantes")
-   - **Preço**: Valor do curso
-   - **Descrição**: Descrição do curso
+   - **Nome do produto**: Introdução ao Bordado
+   - **Preço**: R$ 199,00
+   - **Descrição**: Aprenda os pontos essenciais e materiais do bordado à mão
 4. Após criar, copie o **link de checkout** do produto
-5. Repita para todos os 4 cursos:
-   - Aquarela para Iniciantes
-   - Ilustração Botânica
-   - Pintura a Óleo
-   - Introdução ao Bordado
 
 ## 🔐 Passo 2: Configurar Variáveis de Ambiente na Netlify
 
@@ -37,42 +32,27 @@ Para cada curso, você precisa criar um produto no Kiwify:
 
 ### Variáveis necessárias:
 
-#### 1. Links de Checkout (OBRIGATÓRIO)
+#### 1. Link de Checkout (OBRIGATÓRIO)
 
-Adicione uma variável para cada curso com o link de checkout do Kiwify:
-
-```
-NEXT_PUBLIC_KIWIFY_CHECKOUT_AQUARELA
-Valor: https://pay.kiwify.com.br/SEU_LINK_AQUI
-```
-
-```
-NEXT_PUBLIC_KIWIFY_CHECKOUT_BOTANICA
-Valor: https://pay.kiwify.com.br/SEU_LINK_AQUI
-```
-
-```
-NEXT_PUBLIC_KIWIFY_CHECKOUT_OLEO
-Valor: https://pay.kiwify.com.br/SEU_LINK_AQUI
-```
+Adicione a variável com o link de checkout do Kiwify:
 
 ```
 NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO
 Valor: https://pay.kiwify.com.br/SEU_LINK_AQUI
 ```
 
-**⚠️ IMPORTANTE**: Substitua `SEU_LINK_AQUI` pelos links reais obtidos no painel do Kiwify.
+**⚠️ IMPORTANTE**: Substitua `SEU_LINK_AQUI` pelo link real obtido no painel do Kiwify.
 
-#### 2. Webhook Secret (OBRIGATÓRIO)
+#### 2. Token do Webhook (OBRIGATÓRIO)
 
-Esta chave é usada para validar que os webhooks realmente vêm do Kiwify:
+Este token é usado para validar que os webhooks realmente vêm do Kiwify:
 
 ```
 KIWIFY_WEBHOOK_SECRET
-Valor: sua_chave_secreta_do_kiwify
+Valor: seu_token_do_kiwify
 ```
 
-**Como obter**: No painel do Kiwify, vá em **Configurações** → **Webhooks** → Copie o "Webhook Secret"
+**Como obter**: No painel do Kiwify, vá em **Configurações** → **Webhooks** → Copie o "Token"
 
 #### 3. URL do Site (OBRIGATÓRIO)
 
@@ -87,11 +67,8 @@ Valor: https://seu-site.netlify.app
 
 | Nome da Variável | Valor |
 |-----------------|-------|
-| `NEXT_PUBLIC_KIWIFY_CHECKOUT_AQUARELA` | `https://pay.kiwify.com.br/abc123` |
-| `NEXT_PUBLIC_KIWIFY_CHECKOUT_BOTANICA` | `https://pay.kiwify.com.br/def456` |
-| `NEXT_PUBLIC_KIWIFY_CHECKOUT_OLEO` | `https://pay.kiwify.com.br/ghi789` |
-| `NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO` | `https://pay.kiwify.com.br/jkl012` |
-| `KIWIFY_WEBHOOK_SECRET` | `sk_live_abc123xyz...` |
+| `NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO` | `https://pay.kiwify.com.br/seu_link` |
+| `KIWIFY_WEBHOOK_SECRET` | `seu_token_aqui` |
 | `NEXT_PUBLIC_SITE_URL` | `https://seu-site.netlify.app` |
 
 ## 🔔 Passo 3: Configurar Webhook no Kiwify
@@ -109,28 +86,25 @@ O webhook permite que o Kiwify notifique seu site quando um pagamento for confir
 
 **⚠️ IMPORTANTE**: Substitua `seu-site.netlify.app` pela URL real do seu site.
 
-## 🎯 Passo 4: Mapear Product IDs (Opcional mas Recomendado)
+## 🎯 Passo 4: Mapear Product ID (Opcional mas Recomendado)
 
 Para garantir que o sistema identifique corretamente qual curso foi comprado:
 
 1. Abra o arquivo `janetezuanazzi/src/app/api/webhook/kiwify/route.ts`
 2. Localize a função `mapProductIdToCourseSlug`
-3. Adicione o mapeamento dos seus Product IDs:
+3. Adicione o mapeamento do seu Product ID:
 
 ```typescript
 function mapProductIdToCourseSlug(productId: string): string | null {
   const productMap: Record<string, string> = {
-    'PRODUCT_ID_DO_KIWIFY_1': 'aquarela-iniciantes',
-    'PRODUCT_ID_DO_KIWIFY_2': 'ilustracao-botanica',
-    'PRODUCT_ID_DO_KIWIFY_3': 'pintura-a-oleo',
-    'PRODUCT_ID_DO_KIWIFY_4': 'introducao-ao-bordado',
+    'PRODUCT_ID_DO_KIWIFY': 'introducao-ao-bordado',
   };
   
   return productMap[productId] || null;
 }
 ```
 
-**Como obter os Product IDs**: No painel do Kiwify, vá em **Produtos** → selecione um produto → o ID está na URL ou nas configurações do produto.
+**Como obter o Product ID**: No painel do Kiwify, vá em **Produtos** → selecione o produto → o ID está na URL ou nas configurações do produto.
 
 ## ✅ Passo 5: Testar a Integração
 

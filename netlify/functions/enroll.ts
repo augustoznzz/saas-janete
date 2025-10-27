@@ -102,9 +102,6 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
 // Helper function to get course name from slug
 function getCourseNameFromSlug(slug: string): string {
   const courseNames: Record<string, string> = {
-    'aquarela-iniciantes': 'Aquarela para Iniciantes',
-    'ilustracao-botanica': 'Ilustração Botânica',
-    'pintura-a-oleo': 'Pintura a óleo',
     'introducao-ao-bordado': 'Introdução ao Bordado',
   };
   return courseNames[slug] || 'Curso';
