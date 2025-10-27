@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { getAccessToken } from '@/lib/identity';
-import { getUserFromSession } from '@/lib/auth';
 import { mockCourses } from '@/lib/mockCourses';
 import { calcCourseCompletionPercent, readCourseProgress } from '@/lib/progress';
 
 export default function DashboardPage() {
-  const user = getUserFromSession();
+  const [userName, setUserName] = React.useState<string>('Aluno');
   const [enrolledCourses, setEnrolledCourses] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -30,6 +29,14 @@ export default function DashboardPage() {
               ? userData.user_metadata.enrolled_courses
               : [];
             setEnrolledCourses(enrolled);
+            
+            // Buscar nome do usuário
+            const name = userData?.user_metadata?.full_name || 
+                        userData?.user_metadata?.name ||
+                        userData?.email?.split('@')[0];
+            if (name) {
+              setUserName(name);
+            }
           }
         }
       } catch (error) {
@@ -46,7 +53,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Olá, {user?.name || 'Aluno'}!</h1>
+        <h1 className="text-2xl font-semibold">Olá, {userName}!</h1>
         <p className="text-gray-600">Bem-vindo à sua área de estudos.</p>
       </div>
 
