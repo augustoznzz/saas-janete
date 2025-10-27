@@ -38,10 +38,10 @@ Adicione a variável com o link de checkout do Kiwify:
 
 ```
 NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO
-Valor: https://pay.kiwify.com.br/SEU_LINK_AQUI
+Valor: https://pay.kiwify.com.br/eDz2HDA
 ```
 
-**⚠️ IMPORTANTE**: Substitua `SEU_LINK_AQUI` pelo link real obtido no painel do Kiwify.
+**Observação**: Este link já está configurado no código como fallback. Se você quiser sobrescrever, adicione esta variável na Netlify.
 
 #### 2. Token do Webhook (OBRIGATÓRIO)
 
@@ -67,7 +67,7 @@ Valor: https://seu-site.netlify.app
 
 | Nome da Variável | Valor |
 |-----------------|-------|
-| `NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO` | `https://pay.kiwify.com.br/seu_link` |
+| `NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO` | `https://pay.kiwify.com.br/eDz2HDA` (opcional, já está no código) |
 | `KIWIFY_WEBHOOK_SECRET` | `seu_token_aqui` |
 | `NEXT_PUBLIC_SITE_URL` | `https://seu-site.netlify.app` |
 
@@ -86,7 +86,7 @@ O webhook permite que o Kiwify notifique seu site quando um pagamento for confir
 
 **⚠️ IMPORTANTE**: Substitua `seu-site.netlify.app` pela URL real do seu site.
 
-## 🎯 Passo 4: Mapear Product ID (Opcional mas Recomendado)
+## 🎯 Passo 4: Mapear Product ID (✅ CONFIGURADO)
 
 Para garantir que o sistema identifique corretamente qual curso foi comprado:
 
@@ -97,12 +97,14 @@ Para garantir que o sistema identifique corretamente qual curso foi comprado:
 ```typescript
 function mapProductIdToCourseSlug(productId: string): string | null {
   const productMap: Record<string, string> = {
-    'PRODUCT_ID_DO_KIWIFY': 'introducao-ao-bordado',
+    'eDz2HDA': 'introducao-ao-bordado', // Introdução ao Bordado
   };
   
   return productMap[productId] || null;
 }
 ```
+
+**✅ Já configurado**: O curso "Introdução ao Bordado" já está mapeado com o Product ID `eDz2HDA`.
 
 **Como obter o Product ID**: No painel do Kiwify, vá em **Produtos** → selecione o produto → o ID está na URL ou nas configurações do produto.
 

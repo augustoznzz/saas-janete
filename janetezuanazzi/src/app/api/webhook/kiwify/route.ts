@@ -169,8 +169,7 @@ async function handleOrderChargedback(data: any) {
  */
 function mapProductIdToCourseSlug(productId: string): string | null {
   const productMap: Record<string, string> = {
-    // Adicione o ID do seu produto do Kiwify aqui
-    // 'PRODUCT_ID_BORDADO': 'introducao-ao-bordado',
+    'eDz2HDA': 'introducao-ao-bordado', // Introdução ao Bordado
   };
   
   return productMap[productId] || null;

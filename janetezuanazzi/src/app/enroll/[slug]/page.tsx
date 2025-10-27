@@ -3,7 +3,7 @@ import { getUserFromSession } from '@/lib/auth';
 
 // Mapeamento de cursos para links de checkout do Kiwify
 const KIWIFY_CHECKOUT_LINKS: Record<string, string> = {
-  'introducao-ao-bordado': process.env.NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO || 'https://pay.kiwify.com.br/LINK_BORDADO',
+  'introducao-ao-bordado': process.env.NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO || 'https://pay.kiwify.com.br/eDz2HDA',
 };
 
 export default function EnrollGatePage({ params }: { params: { slug: string } }) {
