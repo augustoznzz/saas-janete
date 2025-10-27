@@ -1,23 +1,46 @@
-import { redirect } from 'next/navigation';
-import { getUserFromSession } from '@/lib/auth';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 // Mapeamento de cursos para links de checkout do Kiwify
 const KIWIFY_CHECKOUT_LINKS: Record<string, string> = {
-  'introducao-ao-bordado': process.env.NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO || 'https://pay.kiwify.com.br/eDz2HDA',
+  'introducao-ao-bordado': 'https://pay.kiwify.com.br/eDz2HDA',
 };
 
 export default function EnrollGatePage({ params }: { params: { slug: string } }) {
-  const user = getUserFromSession();
+  const router = useRouter();
   const courseSlug = params.slug;
 
-  if (!user) {
-    redirect(`/criar-conta?redirect=${encodeURIComponent(`/enroll/${courseSlug}`)}`);
-  }
+  useEffect(() => {
+    // Verificar se há sessão (cookie student_session)
+    const hasSession = document.cookie.includes('student_session');
 
-  // Redirecionar para o link de checkout do Kiwify
-  const paymentHref = KIWIFY_CHECKOUT_LINKS[courseSlug] || '/cursos';
+    if (!hasSession) {
+      // Redirecionar para criar conta se não estiver logado
+      router.push(`/criar-conta?redirect=${encodeURIComponent(`/enroll/${courseSlug}`)}`);
+      return;
+    }
 
-  redirect(paymentHref);
+    // Redirecionar para o link de checkout do Kiwify
+    const paymentHref = KIWIFY_CHECKOUT_LINKS[courseSlug];
+    
+    if (paymentHref) {
+      // Usar window.location para redirecionamento externo
+      window.location.href = paymentHref;
+    } else {
+      // Se não houver link configurado, voltar para a página de cursos
+      router.push('/cursos');
+    }
+  }, [courseSlug, router]);
+
+  return (
+    <div className="container-narrow py-16 text-center">
+      <div className="animate-pulse">
+        <p className="text-lg text-black/70">Redirecionando para o checkout...</p>
+      </div>
+    </div>
+  );
 }
 
 
