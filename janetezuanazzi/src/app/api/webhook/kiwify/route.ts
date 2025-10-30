@@ -102,7 +102,7 @@ async function handleOrderPaid(data: any) {
     // Create user account and enroll in course
     console.log(`Creating account and enrolling ${customerEmail} in course ${courseSlug}`);
     
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
     
     // Generate a temporary password for the user
     const tempPassword = `Kiwi${Date.now().toString().slice(-6)}!`;

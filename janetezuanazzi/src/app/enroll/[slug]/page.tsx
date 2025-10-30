@@ -4,9 +4,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAccessToken } from '@/lib/identity';
 
-// Mapeamento de cursos para links de checkout do Kiwify
+// Links de checkout
 const KIWIFY_CHECKOUT_LINKS: Record<string, string> = {
-  'introducao-ao-bordado': 'https://pay.kiwify.com.br/eDz2HDA',
+  'introducao-ao-bordado': process.env.NEXT_PUBLIC_KIWIFY_CHECKOUT_BORDADO || 'https://pay.kiwify.com.br/eDz2HDA',
+};
+
+const CAKTO_CHECKOUT_LINKS: Record<string, string> = {
+  // Configure via env when available; fallback to empty
+  'introducao-ao-bordado': process.env.NEXT_PUBLIC_CAKTO_CHECKOUT_BORDADO || 'https://pay.cakto.com.br/5q3pep2_627177',
 };
 
 export default function EnrollGatePage({ params }: { params: { slug: string } }) {
@@ -31,8 +36,10 @@ export default function EnrollGatePage({ params }: { params: { slug: string } })
           return;
         }
 
-        // Usuário está logado - redirecionar para o link de checkout do Kiwify
-        const paymentHref = KIWIFY_CHECKOUT_LINKS[courseSlug];
+        // Usuário está logado - preferir Cakto; fallback para Kiwify
+        const caktoHref = CAKTO_CHECKOUT_LINKS[courseSlug];
+        const kiwifyHref = KIWIFY_CHECKOUT_LINKS[courseSlug];
+        const paymentHref = caktoHref || kiwifyHref;
         
         if (paymentHref) {
           // Usar window.location para redirecionamento externo
