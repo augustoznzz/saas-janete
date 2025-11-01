@@ -1,0 +1,64 @@
+import type { Handler } from '@netlify/functions';
+
+// Utility: simple fetch with JSON
+async function jsonFetch(url: string, init: RequestInit = {}) {
+  const res = await fetch(url, init);
+  const ct = res.headers.get('content-type') || '';
+  const body = ct.includes('application/json') ? await res.json().catch(() => ({})) : await res.text();
+  return { res, body } as const;
+}
+
+export const handler: Handler = async (event, context) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  try {
+    const { email, password } = JSON.parse(event.body || '{}');
+    if (!email || !password) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Email e senha são obrigatórios' }) };
+    }
+    if (String(password).length < 8) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Senha inválida' }) };
+    }
+
+    const identityBase = process.env.URL || 'http://localhost:8888';
+
+    // Admin token is required to query and update users
+    const adminToken = process.env.NETLIFY_ADMIN_TOKEN || (context as any)?.clientContext?.identity?.token;
+    if (!adminToken) {
+      return { statusCode: 500, body: JSON.stringify({ error: 'Admin token ausente' }) };
+    }
+
+    // Find existing user by email
+    const { res: listRes, body: listBody } = await jsonFetch(`${identityBase}/.netlify/identity/admin/users?email=${encodeURIComponent(email)}`, {
+      headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    if (!listRes.ok) {
+      return { statusCode: listRes.status, body: JSON.stringify({ error: 'Falha ao consultar usuários' }) };
+    }
+    const users = Array.isArray(listBody) ? listBody : [];
+    const user = users[0];
+    if (!user?.id) {
+      return { statusCode: 404, body: JSON.stringify({ error: 'Usuário não encontrado para este email' }) };
+    }
+
+    // Update password via admin endpoint
+    const { res: updRes, body: updBody } = await jsonFetch(`${identityBase}/.netlify/identity/admin/users/${user.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${adminToken}` },
+      body: JSON.stringify({ password }),
+    });
+    if (!updRes.ok) {
+      return { statusCode: updRes.status, body: JSON.stringify({ error: 'Falha ao atualizar senha', details: updBody }) };
+    }
+
+    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+  } catch (e: any) {
+    return { statusCode: 500, body: JSON.stringify({ error: e?.message || 'Erro interno' }) };
+  }
+};
+
+export default {};
+
+

@@ -1,0 +1,24 @@
+[build]
+  base = "janetezuanazzi"
+  command = "npm run build"
+  publish = ".next"
+  functions = "../netlify/functions"
+
+[build.environment]
+  # Ensure Next.js target is set for Netlify
+  NEXT_TELEMETRY_DISABLED = "1"
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[dev]
+  command = "npm run dev:app"
+  port = 8888
+  targetPort = 3001
+  publish = ".next"
+
+[functions]
+  external_node_modules = ["pg"]
+
+
